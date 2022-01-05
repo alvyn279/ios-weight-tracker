@@ -1,22 +1,16 @@
 import React from 'react';
-import {Text, TextProps, useColorScheme} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {Text, TextProps} from 'react-native';
+import {useTheme} from '../../hooks';
 
 interface ThemedTextProps extends TextProps {
   style?: Array<object>;
 }
 
 const ThemedText: React.FC<ThemedTextProps> = props => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const darkModeAwareTextStyle = {
-    color: isDarkMode ? Colors.light : Colors.dark,
-  };
+  const {textStyle} = useTheme();
 
   return (
-    <Text style={[darkModeAwareTextStyle, ...(props.style || [])]}>
-      {props.children}
-    </Text>
+    <Text style={[textStyle, ...(props.style || [])]}>{props.children}</Text>
   );
 };
 
