@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import InputSpinner from 'react-native-input-spinner';
 import Text from './components/ThemedText';
-import {useTheme} from './hooks';
+import { useTheme } from './hooks';
 
 const styles = StyleSheet.create({
   appView: {
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 });
 
 const App = () => {
-  const {backgroundStyle, barStyle, textStyle} = useTheme();
+  const { backgroundStyle, barStyle, textStyle } = useTheme();
 
   const [inputWeight, setInputWeight] = useState<number>(150.0);
 

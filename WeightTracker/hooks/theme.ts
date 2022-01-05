@@ -1,5 +1,5 @@
-import {StatusBarStyle, useColorScheme} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import { StatusBarStyle, useColorScheme } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 interface ThemedStyles {
   backgroundStyle: object;
