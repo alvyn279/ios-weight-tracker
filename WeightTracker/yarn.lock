@@ -5475,6 +5475,13 @@ react-native-codegen@^0.0.7:
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
 
+react-native-input-spinner@^1.7.12:
+  version "1.7.12"
+  resolved "https://registry.yarnpkg.com/react-native-input-spinner/-/react-native-input-spinner-1.7.12.tgz#a6640a0c591a209d508816f04bb71e30db514a54"
+  integrity sha512-U6Cprz8TocsBjbk2fXeaQs5wuHnJCrbIlVbSgL/5FF9X5Mpzp/xcTyqF4I/fUL0z5uZrVceAmEJ2pWBcAJPtew==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native@0.66.4:
   version "0.66.4"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.66.4.tgz#bf89a5fb18bd23046d889fb4de4ea2822a4d7805"
