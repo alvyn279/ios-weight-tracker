@@ -1,5 +1,10 @@
 import React from 'react';
-import AppleHealthKit, { HealthKitPermissions } from 'react-native-health';
+import AppleHealthKit, {
+  HealthKitPermissions,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  HealthStatusCode,
+  HealthStatusResult,
+} from 'react-native-health';
 import App from './App';
 
 /* Permission options */
@@ -12,15 +17,38 @@ const permissions = {
 
 const AppContainer = () => {
   // Garbage, only for prototype purposes, will refactor into redux
-  AppleHealthKit.initHealthKit(permissions, (error: string) => {
-    /* Called after we receive a response from the system */
 
-    if (error) {
-      console.log('[ERROR] Cannot grant permissions!');
-      return <App healthKit={null} />;
+  // Check not on ipad
+  AppleHealthKit.isAvailable((err: Object, result: boolean) => {
+    if (err) {
+      console.warn('Cannot fetch Health availability status');
     }
 
-    return <App healthKit={AppleHealthKit} />;
+    console.log('Health Kit is available:', result);
+
+    // Ask for permissions
+    AppleHealthKit.initHealthKit(permissions, (initError: string) => {
+      /* Called after we receive a response from the system */
+      if (initError) {
+        // some error when writing permissions for app.
+        console.warn('Cannot grant permissions!');
+      }
+
+      // Check authz status
+      AppleHealthKit.getAuthStatus(
+        permissions,
+        (authErr: string, results: HealthStatusResult) => {
+          if (authErr) {
+            // some error when reading auth status.
+            console.warn('Cannot fetch auth status!');
+          }
+          /**
+           * See {@link HealthStatusCode}
+           */
+          console.log(results);
+        },
+      );
+    });
   });
 
   return <App healthKit={AppleHealthKit} />;

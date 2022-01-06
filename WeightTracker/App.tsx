@@ -45,7 +45,6 @@ interface AppProps {
 }
 
 const App = (props: AppProps) => {
-  console.log(props);
   const { backgroundStyle, barStyle, textStyle } = useTheme();
 
   const [inputWeight, setInputWeight] = useState<number>(150.0);
