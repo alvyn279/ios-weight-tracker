@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Button,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -9,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import InputSpinner from 'react-native-input-spinner';
+import { AppleHealthKit, HealthValue } from 'react-native-health';
 import Text from './components/ThemedText';
 import { useTheme } from './hooks';
 
@@ -38,10 +40,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const App = () => {
+interface AppProps {
+  healthKit: AppleHealthKit | null;
+}
+
+const App = (props: AppProps) => {
+  console.log(props);
   const { backgroundStyle, barStyle, textStyle } = useTheme();
 
   const [inputWeight, setInputWeight] = useState<number>(150.0);
+  const [resultWeight, setResultWeight] = useState<number>(0);
 
   return (
     <SafeAreaView style={[backgroundStyle, styles.appView]}>
@@ -86,7 +94,63 @@ const App = () => {
               style={[
                 styles.mainActionText,
               ]}>{`Actual value = ${inputWeight}`}</Text>
+            <Text
+              style={[
+                styles.mainActionText,
+              ]}>{`Apple Healthkit is init = ${props.healthKit}`}</Text>
           </View>
+          <Button
+            title="list weight"
+            onPress={() => {
+              let listWeightOptions = {
+                startDate: new Date(2021, 0, 0).toISOString(), // required
+                endDate: new Date().toISOString(), // optional; default now
+                ascending: false, // optional; default false
+                limit: 10, // optional; default no limit
+              };
+
+              props.healthKit?.getWeightSamples(
+                listWeightOptions,
+                (err: Object, results: Array<HealthValue>) => {
+                  if (err) {
+                    return;
+                  }
+                  setResultWeight(results[results.length - 1].value);
+                },
+              );
+            }}
+          />
+          <Button
+            title="clear weight"
+            onPress={() => {
+              setResultWeight(0);
+            }}
+          />
+          <View>
+            <Text
+              style={[
+                styles.mainActionText,
+              ]}>{`Last weight = ${resultWeight}`}</Text>
+          </View>
+          <Button
+            title="save weight"
+            onPress={() => {
+              let saveWeightOptions = {
+                value: inputWeight,
+              };
+
+              props.healthKit?.saveWeight(
+                saveWeightOptions,
+                (err: string, result: HealthValue) => {
+                  if (err) {
+                    console.log('error saving weight to Healthkit: ', err);
+                    return;
+                  }
+                  console.log(result.value);
+                },
+              );
+            }}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
