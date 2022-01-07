@@ -1,10 +1,11 @@
-import React from 'react';
-import AppleHealthKit, {
-  HealthKitPermissions,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  HealthStatusCode,
-  HealthStatusResult,
-} from 'react-native-health';
+import React, { useEffect, useState } from 'react';
+import AppleHealthKit, { HealthKitPermissions } from 'react-native-health';
+import {
+  HKInitialize,
+  HKIsAvailable,
+  HKIsSharingAuthorizedForPermission,
+  HKGetAuthZStatus,
+} from './api/health-kit';
 import App from './App';
 
 /* Permission options */
@@ -17,41 +18,38 @@ const permissions = {
 
 const AppContainer = () => {
   // Garbage, only for prototype purposes, will refactor into redux
+  const [deviceIsSupported, setDeviceIsSupported] = useState<boolean>(true);
+  const [appHasPermissions, setAppHasPermissions] = useState<boolean>(false);
 
-  // Check not on ipad
-  AppleHealthKit.isAvailable((err: Object, result: boolean) => {
-    if (err) {
-      console.warn('Cannot fetch Health availability status');
-    }
-
-    console.log('Health Kit is available:', result);
-
-    // Ask for permissions
-    AppleHealthKit.initHealthKit(permissions, (initError: string) => {
-      /* Called after we receive a response from the system */
-      if (initError) {
-        // some error when writing permissions for app.
-        console.warn('Cannot grant permissions!');
-      }
-
-      // Check AuthZ status
-      AppleHealthKit.getAuthStatus(
-        permissions,
-        (authErr: string, results: HealthStatusResult) => {
-          if (authErr) {
-            // some error when reading auth status.
-            console.warn('Cannot fetch auth status!');
-          }
-          /**
-           * See {@link HealthStatusCode}
-           */
-          console.log(results);
-        },
+  const initAppleHealthKit = async () => {
+    try {
+      // Check if Health is available on device
+      const isAvailable = await HKIsAvailable();
+      setDeviceIsSupported(isAvailable);
+      // Ask for permissions
+      await HKInitialize(permissions);
+      // Check permissions
+      const authZStatus = await HKGetAuthZStatus(permissions);
+      setAppHasPermissions(
+        HKIsSharingAuthorizedForPermission(authZStatus.permissions.write[0]),
       );
-    });
-  });
+    } catch (error) {
+      console.warn(error);
+    }
+  };
 
-  return <App healthKit={AppleHealthKit} />;
+  useEffect(() => {
+    initAppleHealthKit();
+    return () => {};
+  }, []);
+
+  return (
+    <App
+      healthKit={AppleHealthKit}
+      deviceIsSupported={deviceIsSupported}
+      appHasPermissions={appHasPermissions}
+    />
+  );
 };
 
 export default AppContainer;

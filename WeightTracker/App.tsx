@@ -41,7 +41,9 @@ const styles = StyleSheet.create({
 });
 
 interface AppProps {
-  healthKit: AppleHealthKit | null;
+  readonly healthKit: AppleHealthKit | null;
+  readonly deviceIsSupported: boolean;
+  readonly appHasPermissions: boolean;
 }
 
 const App = (props: AppProps) => {
@@ -96,7 +98,11 @@ const App = (props: AppProps) => {
             <Text
               style={[
                 styles.mainActionText,
-              ]}>{`Apple Healthkit is init = ${props.healthKit}`}</Text>
+              ]}>{`Device is supported = ${props.deviceIsSupported}`}</Text>
+            <Text
+              style={[
+                styles.mainActionText,
+              ]}>{`App has permissions = ${props.appHasPermissions}`}</Text>
           </View>
           <Button
             title="list weight"
