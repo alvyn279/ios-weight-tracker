@@ -1,9 +1,22 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  ActionReducerMapBuilder,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+  SerializedError,
+} from '@reduxjs/toolkit';
 import { HealthStatusCode } from 'react-native-health';
+import {
+  HKInitialize,
+  HKIsAvailable,
+  HKIsSharingAuthorizedForPermission,
+  HKGetAuthZStatus,
+} from '../../api/health-kit';
+import { APP_HEALTH_PERMISSIONS } from '../../constants';
 
 interface AppStatusState {
   canShareWithHealth: boolean;
-  initError: string | null;
+  initError: SerializedError | null;
   loading: boolean;
 }
 
@@ -13,41 +26,57 @@ const initialState: AppStatusState = {
   loading: false,
 };
 
-// TODO: refactor app initialization with createAsyncThunk()
-export const appStatusSlice = createSlice({
+export const initAuthorization = createAsyncThunk(
+  'appStatus/initAuthorization',
+  async () => {
+    // Check if Health is available on device
+    const isAvailable = await HKIsAvailable();
+
+    if (!isAvailable) {
+      throw new Error('App is not supported on this device.');
+    }
+
+    // Ask for permissions
+    await HKInitialize(APP_HEALTH_PERMISSIONS);
+
+    // Check permissions
+    const authZStatus = await HKGetAuthZStatus(APP_HEALTH_PERMISSIONS);
+    return authZStatus.permissions.write;
+  },
+);
+
+const appStatusSlice = createSlice({
   name: 'appStatus',
   initialState,
-  reducers: {
-    INITIALIZE_APP: (draftState: AppStatusState) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      draftState.initError = null;
-      draftState.loading = true;
-    },
-    INITIALIZE_APP_ERROR: (
-      draftState: AppStatusState,
-      action: PayloadAction<string>,
-    ) => {
-      draftState.initError = action.payload;
-      draftState.loading = false;
-    },
-    INITIALIZE_APP_DONE: (
-      draftState: AppStatusState,
-      action: PayloadAction<Array<HealthStatusCode>>,
-    ) => {
-      const writeWeightPermission = action.payload[0];
-      draftState.canShareWithHealth =
-        writeWeightPermission === HealthStatusCode.SharingAuthorized;
-      draftState.initError = null;
-      draftState.loading = false;
-    },
+  reducers: {},
+  extraReducers: (builder: ActionReducerMapBuilder<AppStatusState>) => {
+    builder
+      .addCase(
+        initAuthorization.fulfilled,
+        (
+          draftState: AppStatusState,
+          action: PayloadAction<Array<HealthStatusCode>>,
+        ) => {
+          const writeWeightPermission = action.payload[0];
+          draftState.canShareWithHealth = HKIsSharingAuthorizedForPermission(
+            writeWeightPermission,
+          );
+          draftState.initError = null;
+          draftState.loading = false;
+        },
+      )
+      .addCase(initAuthorization.pending, (draftState: AppStatusState) => {
+        draftState.initError = null;
+        draftState.loading = true;
+      })
+      .addCase(
+        initAuthorization.rejected,
+        (draftState: AppStatusState, action) => {
+          draftState.initError = action.error;
+          draftState.loading = false;
+        },
+      );
   },
 });
-
-// Action creators are generated for each case reducer function
-export const { INITIALIZE_APP, INITIALIZE_APP_ERROR, INITIALIZE_APP_DONE } =
-  appStatusSlice.actions;
 
 export default appStatusSlice.reducer;
