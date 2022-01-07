@@ -32,6 +32,9 @@ export const initAuthorization = createAsyncThunk(
     // Check if Health is available on device
     const isAvailable = await HKIsAvailable();
 
+    // TODO, remove test for screen loader
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     if (!isAvailable) {
       throw new Error('App is not supported on this device.');
     }

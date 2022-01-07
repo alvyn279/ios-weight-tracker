@@ -1,53 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import AppleHealthKit, { HealthKitPermissions } from 'react-native-health';
-import {
-  HKInitialize,
-  HKIsAvailable,
-  HKIsSharingAuthorizedForPermission,
-  HKGetAuthZStatus,
-} from './api/health-kit';
+import React, { useEffect } from 'react';
 import App from './App';
-
-/* Permission options */
-const permissions = {
-  permissions: {
-    read: [AppleHealthKit.Constants.Permissions.Weight],
-    write: [AppleHealthKit.Constants.Permissions.Weight],
-  },
-} as HealthKitPermissions;
+import { useAppDispatch, useAppSelector } from './store';
+import { initAuthorization } from './store/appStatus';
 
 const AppContainer = () => {
-  // Garbage, only for prototype purposes, will refactor into redux
-  const [deviceIsSupported, setDeviceIsSupported] = useState<boolean>(true);
-  const [appHasPermissions, setAppHasPermissions] = useState<boolean>(false);
-
-  const initAppleHealthKit = async () => {
-    try {
-      // Check if Health is available on device
-      const isAvailable = await HKIsAvailable();
-      setDeviceIsSupported(isAvailable);
-      // Ask for permissions
-      await HKInitialize(permissions);
-      // Check permissions
-      const authZStatus = await HKGetAuthZStatus(permissions);
-      setAppHasPermissions(
-        HKIsSharingAuthorizedForPermission(authZStatus.permissions.write[0]),
-      );
-    } catch (error) {
-      console.warn(error);
-    }
-  };
+  const dispatch = useAppDispatch();
+  const appHasPermissions = useAppSelector<boolean>(
+    state => state.appStatus.canShareWithHealth,
+  );
+  const permissionsError = useAppSelector(state => state.appStatus.initError);
+  const permissionsLoading = useAppSelector(state => state.appStatus.loading);
 
   useEffect(() => {
-    initAppleHealthKit();
+    dispatch(initAuthorization());
     return () => {};
-  }, []);
+  }, [dispatch]);
 
   return (
     <App
-      healthKit={AppleHealthKit}
-      deviceIsSupported={deviceIsSupported}
       appHasPermissions={appHasPermissions}
+      permissionsError={permissionsError?.message}
+      permissionsLoading={permissionsLoading}
     />
   );
 };

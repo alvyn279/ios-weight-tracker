@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  ActivityIndicator,
   Button,
   KeyboardAvoidingView,
   Platform,
@@ -10,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import InputSpinner from 'react-native-input-spinner';
-import { AppleHealthKit, HealthValue } from 'react-native-health';
+import AppleHealthKit, { HealthValue } from 'react-native-health';
 import Text from './components/ThemedText';
 import { useTheme } from './hooks';
 
@@ -41,9 +42,9 @@ const styles = StyleSheet.create({
 });
 
 interface AppProps {
-  readonly healthKit: AppleHealthKit | null;
-  readonly deviceIsSupported: boolean;
   readonly appHasPermissions: boolean;
+  readonly permissionsError?: string;
+  readonly permissionsLoading: boolean;
 }
 
 const App = (props: AppProps) => {
@@ -61,101 +62,110 @@ const App = (props: AppProps) => {
         <ScrollView
           contentContainerStyle={[styles.scrollViewContainer]}
           keyboardShouldPersistTaps="handled">
-          <View>
-            <Text style={[styles.mainActionText]}>Hellow 👋</Text>
-            <Text style={[styles.superSized]}>⚖️</Text>
-          </View>
-          <InputSpinner
-            width={'70%'}
-            shadow={true}
-            maxLength={5}
-            colorMax={'#f04048'}
-            colorMin={'#40c5f4'}
-            accelerationDelay={750}
-            value={inputWeight}
-            onChange={setInputWeight}
-            inputProps={{
-              ...textStyle,
-              fontSize: 30,
-              minWidth: '20%',
-              marginHorizontal: 5,
-            }}
-            step={0.1}
-            precision={1}
-            type={'float'}
-            buttonLeftImage={<Text style={[styles.mainActionText]}>🥵</Text>}
-            buttonRightImage={<Text style={[styles.mainActionText]}>💪</Text>}
-            buttonStyle={styles.upDownButton}
-            buttonFontSize={100}
-            colorPress={'#0F0'}>
-            <Text>lbs</Text>
-          </InputSpinner>
-          <View>
-            <Text
-              style={[
-                styles.mainActionText,
-              ]}>{`Actual value = ${inputWeight}`}</Text>
-            <Text
-              style={[
-                styles.mainActionText,
-              ]}>{`Device is supported = ${props.deviceIsSupported}`}</Text>
-            <Text
-              style={[
-                styles.mainActionText,
-              ]}>{`App has permissions = ${props.appHasPermissions}`}</Text>
-          </View>
-          <Button
-            title="list weight"
-            onPress={() => {
-              let listWeightOptions = {
-                startDate: new Date(2021, 0, 0).toISOString(), // required
-                endDate: new Date().toISOString(), // optional; default now
-                ascending: false, // optional; default false
-                limit: 10, // optional; default no limit
-              };
+          {props.permissionsLoading ? (
+            <ActivityIndicator size={'large'} />
+          ) : (
+            <>
+              <View>
+                <Text style={[styles.mainActionText]}>Hellow 👋</Text>
+                <Text style={[styles.superSized]}>⚖️</Text>
+              </View>
+              <InputSpinner
+                width={'70%'}
+                shadow={true}
+                maxLength={5}
+                colorMax={'#f04048'}
+                colorMin={'#40c5f4'}
+                accelerationDelay={750}
+                value={inputWeight}
+                onChange={setInputWeight}
+                inputProps={{
+                  ...textStyle,
+                  fontSize: 30,
+                  minWidth: '20%',
+                  marginHorizontal: 5,
+                }}
+                step={0.1}
+                precision={1}
+                type={'float'}
+                buttonLeftImage={
+                  <Text style={[styles.mainActionText]}>🥵</Text>
+                }
+                buttonRightImage={
+                  <Text style={[styles.mainActionText]}>💪</Text>
+                }
+                buttonStyle={styles.upDownButton}
+                buttonFontSize={100}
+                colorPress={'#0F0'}>
+                <Text>lbs</Text>
+              </InputSpinner>
+              <View>
+                <Text
+                  style={[
+                    styles.mainActionText,
+                  ]}>{`Actual value = ${inputWeight}`}</Text>
+                <Text
+                  style={[
+                    styles.mainActionText,
+                  ]}>{`App has permissions = ${props.appHasPermissions}`}</Text>
+                <Text style={[styles.mainActionText]}>{`Permission error = ${
+                  props.permissionsError || 'None'
+                }`}</Text>
+              </View>
+              <Button
+                title="list weight"
+                onPress={() => {
+                  let listWeightOptions = {
+                    startDate: new Date(2021, 0, 0).toISOString(), // required
+                    endDate: new Date().toISOString(), // optional; default now
+                    ascending: false, // optional; default false
+                    limit: 10, // optional; default no limit
+                  };
 
-              props.healthKit?.getWeightSamples(
-                listWeightOptions,
-                (err: Object, results: Array<HealthValue>) => {
-                  if (err) {
-                    return;
-                  }
-                  setResultWeight(results[results.length - 1].value);
-                },
-              );
-            }}
-          />
-          <Button
-            title="clear weight"
-            onPress={() => {
-              setResultWeight(0);
-            }}
-          />
-          <View>
-            <Text
-              style={[
-                styles.mainActionText,
-              ]}>{`Last weight = ${resultWeight}`}</Text>
-          </View>
-          <Button
-            title="save weight"
-            onPress={() => {
-              let saveWeightOptions = {
-                value: inputWeight,
-              };
+                  AppleHealthKit.getWeightSamples(
+                    listWeightOptions,
+                    (err: Object, results: Array<HealthValue>) => {
+                      if (err) {
+                        return;
+                      }
+                      setResultWeight(results[results.length - 1].value);
+                    },
+                  );
+                }}
+              />
+              <Button
+                title="clear weight"
+                onPress={() => {
+                  setResultWeight(0);
+                }}
+              />
+              <View>
+                <Text
+                  style={[
+                    styles.mainActionText,
+                  ]}>{`Last weight = ${resultWeight}`}</Text>
+              </View>
+              <Button
+                title="save weight"
+                onPress={() => {
+                  let saveWeightOptions = {
+                    value: inputWeight,
+                  };
 
-              props.healthKit?.saveWeight(
-                saveWeightOptions,
-                (err: string, result: HealthValue) => {
-                  if (err) {
-                    console.log('error saving weight to Healthkit: ', err);
-                    return;
-                  }
-                  console.log(result.value);
-                },
-              );
-            }}
-          />
+                  AppleHealthKit.saveWeight(
+                    saveWeightOptions,
+                    (err: string, result: HealthValue) => {
+                      if (err) {
+                        console.log('error saving weight to Healthkit: ', err);
+                        return;
+                      }
+                      console.log(result.value);
+                    },
+                  );
+                }}
+              />
+            </>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
