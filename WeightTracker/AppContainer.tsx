@@ -34,7 +34,7 @@ const AppContainer = () => {
         console.warn('Cannot grant permissions!');
       }
 
-      // Check authz status
+      // Check AuthZ status
       AppleHealthKit.getAuthStatus(
         permissions,
         (authErr: string, results: HealthStatusResult) => {
