@@ -12,7 +12,7 @@ import {
   HKIsSharingAuthorizedForPermission,
   HKGetAuthZStatus,
 } from '../../api/health-kit';
-import { APP_HEALTH_PERMISSIONS } from '../../constants';
+import { APP_HEALTH_PERMISSIONS } from '../../utils/constants';
 
 interface AppStatusState {
   canShareWithHealth: boolean;
