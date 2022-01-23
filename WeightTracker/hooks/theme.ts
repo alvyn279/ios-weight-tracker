@@ -1,13 +1,17 @@
-import { StatusBarStyle, useColorScheme } from 'react-native';
+import { ColorValue, StatusBarStyle, useColorScheme } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
+
+type TextStyle = {
+  color: number | ColorValue;
+};
 
 export type ThemedStyles = {
   isDarkMode: boolean;
   DarkTheme: Theme;
   DefaultTheme: Theme;
   backgroundStyle: object;
-  textStyle: object;
+  textStyle: TextStyle;
   barStyle: StatusBarStyle;
   navBarStyle: object;
 };
