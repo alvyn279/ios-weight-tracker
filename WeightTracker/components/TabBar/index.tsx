@@ -59,7 +59,7 @@ export const getTabNavigatorProps = (theme: ThemedStyles): object => {
       tabBarStyle: {
         ...navBarStyle,
         position: 'absolute',
-        opacity: 0.8,
+        opacity: 0.93,
         borderTopWidth: 0,
       },
     },

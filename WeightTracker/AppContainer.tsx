@@ -1,7 +1,12 @@
 import React, { useEffect } from 'react';
-import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
 
 import { useAppDispatch, useAppSelector } from './store';
 import { initAuthorization } from './store/appStatus';
@@ -53,7 +58,9 @@ const AppContainer = () => {
   }
 
   return appHasPermissions ? (
-    <NavigationContainer>
+    <NavigationContainer
+      theme={theme.isDarkMode ? theme.DarkTheme : theme.DefaultTheme}>
+      <StatusBar barStyle={theme.barStyle} />
       <Tab.Navigator {...getTabNavigatorProps(theme)}>
         <Tab.Screen
           name={SCREENS.TAB_HOME}
