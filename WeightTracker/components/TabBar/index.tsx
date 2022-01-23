@@ -42,6 +42,11 @@ export const getCommonNavigatorProps = (theme: ThemedStyles): object => {
       headerStyle: {
         ...navBarStyle,
       },
+      headerLargeTitle: true,
+      headerLargeStyle: {
+        ...theme.backgroundStyle,
+      },
+      headerLargeTitleShadowVisible: false,
     },
   };
 };
