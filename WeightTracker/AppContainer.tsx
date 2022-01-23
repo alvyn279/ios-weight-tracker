@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -16,6 +16,14 @@ import {
 } from './components/TabBar';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
+
+const styles = StyleSheet.create({
+  absoluteZero: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 const AppContainer = () => {
   const dispatch = useAppDispatch();
@@ -37,7 +45,11 @@ const AppContainer = () => {
   }, [dispatch]);
 
   if (permissionsLoading) {
-    return <ActivityIndicator size={'large'} />;
+    return (
+      <SafeAreaView style={[styles.absoluteZero, theme.backgroundStyle]}>
+        <ActivityIndicator size={'large'} />
+      </SafeAreaView>
+    );
   }
 
   return appHasPermissions ? (
