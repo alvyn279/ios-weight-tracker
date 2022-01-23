@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   ActivityIndicator,
+  AppState,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -19,7 +20,7 @@ import {
 import WarningPanel from './components/WarningPanel';
 import { i18n } from './utils/i18n';
 import { RootStackParamList, SCREENS } from './utils/navigation';
-import { useTheme } from './hooks';
+import { useOnResume, useTheme } from './hooks';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
@@ -32,8 +33,10 @@ const styles = StyleSheet.create({
 });
 
 const AppContainer = () => {
+  const iosAppState = useRef(AppState.currentState);
   const dispatch = useAppDispatch();
   const theme = useTheme();
+
   const appHasPermissions = useAppSelector<boolean>(
     state => state.appStatus.canShareWithHealth,
   );
@@ -49,6 +52,10 @@ const AppContainer = () => {
     dispatch(initAuthorization());
     return () => {};
   }, [dispatch]);
+
+  useOnResume(iosAppState, () => {
+    // TODO: Check permissions
+  });
 
   const withStatusIndicator = (children: React.ReactNode) => (
     <>

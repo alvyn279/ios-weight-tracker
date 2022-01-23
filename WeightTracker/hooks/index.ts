@@ -1,3 +1,4 @@
 import { useTheme } from './theme';
+import { useOnResume } from './listeners';
 
-export { useTheme };
+export { useOnResume, useTheme };
