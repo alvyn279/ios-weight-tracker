@@ -10,7 +10,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { useAppDispatch, useAppSelector } from './store';
-import { initAuthorization } from './store/appStatus';
+import { initAuthorization, screenAuthorization } from './store/appStatus';
 import HistoryStackScreen from './components/History';
 import HomeStackScreen from './components/Home';
 import {
@@ -54,7 +54,7 @@ const AppContainer = () => {
   }, [dispatch]);
 
   useOnResume(iosAppState, () => {
-    // TODO: Check permissions
+    dispatch(screenAuthorization());
   });
 
   const withStatusIndicator = (children: React.ReactNode) => (

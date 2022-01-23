@@ -45,6 +45,14 @@ export const initAuthorization = createAsyncThunk(
   },
 );
 
+export const screenAuthorization = createAsyncThunk(
+  'appStatus/screenAuthorization',
+  async () => {
+    const authZStatus = await HKGetAuthZStatus(APP_HEALTH_PERMISSIONS);
+    return authZStatus.permissions.write;
+  },
+);
+
 const appStatusSlice = createSlice({
   name: 'appStatus',
   initialState,
@@ -74,6 +82,26 @@ const appStatusSlice = createSlice({
         (draftState: AppStatusState, action) => {
           draftState.initError = action.error;
           draftState.loading = false;
+        },
+      )
+      .addCase(
+        screenAuthorization.fulfilled,
+        (
+          draftState: AppStatusState,
+          action: PayloadAction<Array<HealthStatusCode>>,
+        ) => {
+          const writeWeightPermission = action.payload[0];
+          draftState.canShareWithHealth = HKIsSharingAuthorizedForPermission(
+            writeWeightPermission,
+          );
+          draftState.initError = null;
+        },
+      )
+      .addCase(
+        screenAuthorization.rejected,
+        (draftState: AppStatusState, action) => {
+          // TODO: maybe look into another error field for this
+          draftState.initError = action.error;
         },
       );
   },
