@@ -2,6 +2,8 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HistoryProps, SCREENS } from '../../utils/navigation';
 import { Button } from 'react-native';
+import { useTheme } from '../../hooks';
+import { getCommonNavigatorProps } from '../TabBar';
 
 const HistoryStack = createNativeStackNavigator();
 
@@ -13,10 +15,11 @@ const Temp = ({ navigation }: HistoryProps) => (
 );
 
 const HistoryContainer = () => {
+  const theme = useTheme();
   // hook into redux store for all weights
   // use dispatch
   return (
-    <HistoryStack.Navigator>
+    <HistoryStack.Navigator {...getCommonNavigatorProps(theme)}>
       <HistoryStack.Screen name={SCREENS.HISTORY} component={Temp} />
     </HistoryStack.Navigator>
   );

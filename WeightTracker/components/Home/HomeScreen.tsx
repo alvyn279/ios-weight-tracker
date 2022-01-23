@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   allPageContainer: {
-    padding: 20,
     flex: 1,
   },
   scrollViewContainer: {

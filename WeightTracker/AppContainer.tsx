@@ -9,11 +9,17 @@ import WarningPanel from './components/WarningPanel';
 import HomeStackScreen from './components/Home';
 import HistoryStackScreen from './components/History';
 import { RootStackParamList, SCREENS } from './utils/navigation';
+import { useTheme } from './hooks';
+import {
+  getTabBarScreenProps,
+  getTabNavigatorProps,
+} from './components/TabBar';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
 const AppContainer = () => {
   const dispatch = useAppDispatch();
+  const theme = useTheme();
   const appHasPermissions = useAppSelector<boolean>(
     state => state.appStatus.canShareWithHealth,
   );
@@ -36,16 +42,16 @@ const AppContainer = () => {
 
   return appHasPermissions ? (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={{ headerShown: false }}>
+      <Tab.Navigator {...getTabNavigatorProps(theme)}>
         <Tab.Screen
           name={SCREENS.TAB_HOME}
-          options={{ tabBarLabel: SCREENS.HOME }}
           component={HomeStackScreen}
+          {...getTabBarScreenProps(SCREENS.TAB_HOME)}
         />
         <Tab.Screen
           name={SCREENS.TAB_HISTORY}
-          options={{ tabBarLabel: SCREENS.HISTORY }}
           component={HistoryStackScreen}
+          {...getTabBarScreenProps(SCREENS.TAB_HISTORY)}
         />
       </Tab.Navigator>
     </NavigationContainer>

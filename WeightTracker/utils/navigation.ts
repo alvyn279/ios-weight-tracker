@@ -7,6 +7,8 @@ export enum SCREENS {
   TAB_HISTORY = 'Tab history',
 }
 
+export type TAB_SCREEN = SCREENS.TAB_HOME | SCREENS.TAB_HISTORY;
+
 export type RootStackParamList = {
   [SCREENS.HOME]: {
     fromHistory: boolean;
