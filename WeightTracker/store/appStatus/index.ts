@@ -1,3 +1,3 @@
-import { initAuthorization, screenAuthorization } from './appStatusSlice';
+import { initAuthorization, screenAuthorization } from './appStatus.slice';
 
 export { initAuthorization, screenAuthorization };

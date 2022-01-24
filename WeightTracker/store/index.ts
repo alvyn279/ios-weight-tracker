@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from './hooks';
-import appStatusReducer from './appStatus/appStatusSlice';
+import appStatusReducer from './appStatus/appStatus.slice';
 
 const store = configureStore({
   reducer: {
