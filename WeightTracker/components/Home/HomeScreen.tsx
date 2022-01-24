@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Button,
   KeyboardAvoidingView,
@@ -12,6 +12,7 @@ import InputSpinner from 'react-native-input-spinner';
 import AppleHealthKit, { HealthValue } from 'react-native-health';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useScrollToTop } from '@react-navigation/native';
 
 import Text from '../ThemedText';
 import { useTheme } from '../../hooks';
@@ -54,9 +55,13 @@ const HomeScreen = (_props: HomeScreenProps) => {
   const { textStyle } = useTheme();
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
+  const scrollViewRef = useRef(null);
+
+  useScrollToTop(scrollViewRef);
 
   const [inputWeight, setInputWeight] = useState<number>(150.0);
   const [resultWeight, setResultWeight] = useState<number>(0);
+
   return (
     <SafeAreaView style={[styles.appView]}>
       <KeyboardAvoidingView
@@ -64,6 +69,7 @@ const HomeScreen = (_props: HomeScreenProps) => {
         style={[styles.fullWidth, styles.fullFlex]}
         keyboardVerticalOffset={headerHeight}>
         <ScrollView
+          ref={scrollViewRef}
           contentContainerStyle={[
             styles.scrollViewContainer,
             { paddingBottom: tabBarHeight },
