@@ -7,6 +7,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import InputSpinner from 'react-native-input-spinner';
 import AppleHealthKit, { HealthValue } from 'react-native-health';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -40,6 +41,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
 });
+
+const buzzForWeightChange = () => {
+  ReactNativeHapticFeedback.trigger('impactLight', {
+    enableVibrateFallback: true,
+  });
+};
 
 const HomeScreen = (_props: HomeScreenProps) => {
   // Accessing params:
@@ -77,6 +84,8 @@ const HomeScreen = (_props: HomeScreenProps) => {
             accelerationDelay={750}
             value={inputWeight}
             onChange={setInputWeight}
+            onIncrease={buzzForWeightChange}
+            onDecrease={buzzForWeightChange}
             inputProps={{
               ...textStyle,
               fontSize: 30,

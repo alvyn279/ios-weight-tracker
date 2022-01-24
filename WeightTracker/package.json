@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "^1.7.1",
     "react": "17.0.2",
     "react-native": "0.66.4",
+    "react-native-haptic-feedback": "^1.13.0",
     "react-native-health": "^1.12.0",
     "react-native-input-spinner": "^1.7.12",
     "react-native-safe-area-context": "^3.3.2",
