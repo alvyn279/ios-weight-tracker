@@ -26,6 +26,14 @@ const initialState: AppStatusState = {
   loading: false,
 };
 
+/**
+ * Thunk called once at app initialization to:
+ * 1) Check if Health is available
+ * 2) Ask for permissions (only done once, after app installation).
+ *    Subsequent permissions prompts are never shown. User must
+ *    configure in Settings.
+ * 3) Check read/write permissions are given
+ */
 export const initAuthorization = createAsyncThunk(
   'appStatus/initAuthorization',
   async () => {
@@ -45,6 +53,10 @@ export const initAuthorization = createAsyncThunk(
   },
 );
 
+/**
+ * Thunk that "screens" the active app permissions to make sure the
+ * user is still authorized to read/write to Health app.
+ */
 export const screenAuthorization = createAsyncThunk(
   'appStatus/screenAuthorization',
   async () => {
