@@ -2,6 +2,14 @@ import { ColorValue, StatusBarStyle, useColorScheme } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
 
+const CustomDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: '#191919',
+  },
+};
+
 export type TextStyle = {
   color: number | ColorValue;
 };
@@ -15,6 +23,7 @@ export type ThemedStyles = {
   barStyle: StatusBarStyle;
   navBarStyle: object;
   touchFeedbackColor: string;
+  buttonTextPrimaryColor: TextStyle;
 };
 
 export const useTheme = (): ThemedStyles => {
@@ -22,11 +31,11 @@ export const useTheme = (): ThemedStyles => {
 
   return {
     isDarkMode,
-    DarkTheme,
+    DarkTheme: CustomDarkTheme,
     DefaultTheme,
     backgroundStyle: {
       backgroundColor: isDarkMode
-        ? DarkTheme.colors.background
+        ? CustomDarkTheme.colors.background
         : DefaultTheme.colors.background,
     },
     textStyle: {
@@ -37,5 +46,10 @@ export const useTheme = (): ThemedStyles => {
       backgroundColor: isDarkMode ? Colors.darker : Colors.light,
     },
     touchFeedbackColor: isDarkMode ? Colors.dark : 'gainsboro',
+    buttonTextPrimaryColor: {
+      color: isDarkMode
+        ? CustomDarkTheme.colors.primary
+        : DefaultTheme.colors.primary,
+    },
   };
 };

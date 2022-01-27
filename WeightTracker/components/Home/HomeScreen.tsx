@@ -19,6 +19,8 @@ import Text from '../ThemedText';
 import { useTheme } from '../../hooks';
 import { HomeScreenProps } from '../../utils/navigation';
 import { TextStyle } from '../../hooks/theme';
+import WTButton from '../WTButton';
+import ThemedText from '../ThemedText';
 
 const styles = StyleSheet.create({
   appView: {
@@ -27,8 +29,10 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     flex: 1,
+    width: '75%',
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
   },
   weightPicker: {
     paddingVertical: 40,
@@ -56,6 +60,9 @@ const styles = StyleSheet.create({
     fontSize: 40,
     minWidth: '25%',
     marginHorizontal: 5,
+  },
+  flexDirectionRow: {
+    flexDirection: 'row',
   },
 });
 
@@ -108,7 +115,6 @@ const HomeScreen = (_props: HomeScreenProps) => {
           </View>
           <InputSpinner
             style={[styles.weightPicker]}
-            width={'70%'}
             maxLength={5}
             accelerationDelay={200}
             value={inputWeight}
@@ -163,30 +169,38 @@ const HomeScreen = (_props: HomeScreenProps) => {
             }}
           />
           <View>
-            <Text
+            <ThemedText
               style={[
                 styles.mainActionText,
-              ]}>{`Last weight = ${resultWeight}`}</Text>
+              ]}>{`Last weight = ${resultWeight}`}</ThemedText>
           </View>
-          <Button
-            title="save weight"
-            onPress={() => {
-              let saveWeightOptions = {
-                value: inputWeight,
-              };
+          <View style={[styles.flexDirectionRow]}>
+            <WTButton
+              onPress={() => {
+                let saveWeightOptions = {
+                  value: inputWeight,
+                };
 
-              AppleHealthKit.saveWeight(
-                saveWeightOptions,
-                (err: string, result: HealthValue) => {
-                  if (err) {
-                    console.log('error saving weight to Healthkit: ', err);
-                    return;
-                  }
-                  console.log(result.value);
-                },
-              );
-            }}
-          />
+                AppleHealthKit.saveWeight(
+                  saveWeightOptions,
+                  (err: string, result: HealthValue) => {
+                    if (err) {
+                      console.log('error saving weight to Healthkit: ', err);
+                      return;
+                    }
+                    console.log(result.value);
+                  },
+                );
+              }}
+              confirmOptions={{
+                title: 'Are you sure?',
+                message: `You are about to save a weight of ${inputWeight}lbs to Apple Health.`,
+                canceleable: true,
+                confirmButtonText: 'Save',
+              }}>
+              Save to Health
+            </WTButton>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
