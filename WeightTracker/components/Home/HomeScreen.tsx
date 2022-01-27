@@ -10,6 +10,7 @@ import {
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import InputSpinner from 'react-native-input-spinner';
 import AppleHealthKit, { HealthValue } from 'react-native-health';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useScrollToTop } from '@react-navigation/native';
@@ -17,6 +18,7 @@ import { useScrollToTop } from '@react-navigation/native';
 import Text from '../ThemedText';
 import { useTheme } from '../../hooks';
 import { HomeScreenProps } from '../../utils/navigation';
+import { TextStyle } from '../../hooks/theme';
 
 const styles = StyleSheet.create({
   appView: {
@@ -24,7 +26,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollViewContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  weightPicker: {
+    paddingVertical: 40,
   },
   fullFlex: {
     flex: 1,
@@ -33,13 +40,22 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   mainActionText: {
-    fontSize: 30,
+    fontSize: 25,
   },
   superSized: {
     fontSize: 100,
   },
   upDownButton: {
     marginHorizontal: 15,
+    justifyContent: 'center',
+  },
+  fixPaddingOnButtonIconImage: {
+    paddingLeft: 2,
+  },
+  scrollerInput: {
+    fontSize: 40,
+    minWidth: '25%',
+    marginHorizontal: 5,
   },
 });
 
@@ -49,10 +65,23 @@ const buzzForWeightChange = () => {
   });
 };
 
+type ScrollerButtonProps = {
+  iconName: string;
+  textStyle: TextStyle;
+};
+const ScrollerButton = ({ iconName, textStyle }: ScrollerButtonProps) => (
+  <Ionicons
+    name={iconName}
+    size={30}
+    color={textStyle.color}
+    style={[styles.fixPaddingOnButtonIconImage]}
+  />
+);
+
 const HomeScreen = (_props: HomeScreenProps) => {
   // Accessing params:
   //_props.route.params?.fromHistory;
-  const { textStyle } = useTheme();
+  const { navBarStyle, textStyle, touchFeedbackColor } = useTheme();
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const scrollViewRef = useRef(null);
@@ -74,46 +103,38 @@ const HomeScreen = (_props: HomeScreenProps) => {
             styles.scrollViewContainer,
             { paddingBottom: tabBarHeight },
           ]}>
-          <Text style={[styles.mainActionText]}>Hellow 👋</Text>
-          <Text style={[styles.superSized]}>Hi</Text>
-          <Text style={[styles.superSized]}>Hi</Text>
-          <Text style={[styles.superSized]}>Hi</Text>
-          <Text style={[styles.superSized]}>Hi</Text>
-          <Text style={[styles.superSized]}>Hi</Text>
-          <Text style={[styles.superSized]}>Hi</Text>
+          <View>
+            <Text style={[styles.mainActionText]}>Enter your weight:</Text>
+          </View>
           <InputSpinner
+            style={[styles.weightPicker]}
             width={'70%'}
-            shadow={true}
             maxLength={5}
-            colorMax={'#f04048'}
-            colorMin={'#40c5f4'}
-            accelerationDelay={750}
+            accelerationDelay={200}
             value={inputWeight}
             onChange={setInputWeight}
             onIncrease={buzzForWeightChange}
             onDecrease={buzzForWeightChange}
             inputProps={{
               ...textStyle,
-              fontSize: 30,
-              minWidth: '20%',
-              marginHorizontal: 5,
+              ...styles.scrollerInput,
             }}
             step={0.1}
             precision={1}
             type={'float'}
-            buttonLeftImage={<Text style={[styles.mainActionText]}>🥵</Text>}
-            buttonRightImage={<Text style={[styles.mainActionText]}>💪</Text>}
-            buttonStyle={styles.upDownButton}
-            buttonFontSize={100}
-            colorPress={'#0F0'}>
+            buttonLeftImage={
+              <ScrollerButton iconName="remove" textStyle={textStyle} />
+            }
+            buttonRightImage={
+              <ScrollerButton iconName="add" textStyle={textStyle} />
+            }
+            buttonStyle={{
+              ...styles.upDownButton,
+              ...navBarStyle,
+            }}
+            colorPress={touchFeedbackColor}>
             <Text>lbs</Text>
           </InputSpinner>
-          <View>
-            <Text
-              style={[
-                styles.mainActionText,
-              ]}>{`Actual value = ${inputWeight}`}</Text>
-          </View>
           <Button
             title="list weight"
             onPress={() => {

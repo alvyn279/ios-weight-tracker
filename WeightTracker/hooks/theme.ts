@@ -2,7 +2,7 @@ import { ColorValue, StatusBarStyle, useColorScheme } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
 
-type TextStyle = {
+export type TextStyle = {
   color: number | ColorValue;
 };
 
@@ -14,6 +14,7 @@ export type ThemedStyles = {
   textStyle: TextStyle;
   barStyle: StatusBarStyle;
   navBarStyle: object;
+  touchFeedbackColor: string;
 };
 
 export const useTheme = (): ThemedStyles => {
@@ -35,5 +36,6 @@ export const useTheme = (): ThemedStyles => {
     navBarStyle: {
       backgroundColor: isDarkMode ? Colors.darker : Colors.light,
     },
+    touchFeedbackColor: isDarkMode ? Colors.dark : 'gainsboro',
   };
 };
