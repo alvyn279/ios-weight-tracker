@@ -21,6 +21,10 @@ import WarningPanel from './components/WarningPanel';
 import { i18n } from './utils/i18n';
 import { RootStackParamList, SCREENS } from './utils/navigation';
 import { useOnResume, useTheme } from './hooks';
+import {
+  selectArePermissionsLoading,
+  selectCanShareWithHealth,
+} from './store/appStatus/selectors';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
@@ -37,15 +41,13 @@ const AppContainer = () => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
-  const appHasPermissions = useAppSelector<boolean>(
-    state => state.appStatus.canShareWithHealth,
-  );
+  const appHasPermissions = useAppSelector<boolean>(selectCanShareWithHealth);
   // TODO: look at transient error
   // const permissionsError = useAppSelector<SerializedError | null>(
   //   state => state.appStatus.initError,
   // );
   const permissionsLoading = useAppSelector<boolean>(
-    state => state.appStatus.loading,
+    selectArePermissionsLoading,
   );
 
   useEffect(() => {
