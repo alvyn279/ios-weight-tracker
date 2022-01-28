@@ -2,6 +2,8 @@ import AppleHealthKit, {
   HealthKitPermissions,
   HealthStatusCode,
   HealthStatusResult,
+  HealthUnitOptions,
+  HealthValue,
 } from 'react-native-health';
 
 export const HKIsSharingAuthorizedForPermission = (status: HealthStatusCode) =>
@@ -51,6 +53,24 @@ export const HKGetAuthZStatus = (permissions: HealthKitPermissions) =>
         }
 
         resolve(results);
+      },
+    );
+  });
+
+/**
+ * Returns Promise to get the latest weight saved in Health.
+ * @param options
+ */
+export const HKGetLatestWeight = (options: HealthUnitOptions) =>
+  new Promise<HealthValue>((resolve, reject) => {
+    AppleHealthKit.getLatestWeight(
+      options,
+      (err: string, latestWeight: HealthValue) => {
+        if (err) {
+          reject(new Error(`Cannot fetch latest weight: ${err}`));
+        }
+        // TODO: check scenario where there are no weights
+        resolve(latestWeight);
       },
     );
   });

@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from './hooks';
-import appStatusReducer from './appStatus/appStatus.slice';
+import appStatusReducer from './appStatus';
+import weightsReducer from './weights';
 
 const store = configureStore({
   reducer: {
     appStatus: appStatusReducer,
+    weights: weightsReducer,
   },
 });
 

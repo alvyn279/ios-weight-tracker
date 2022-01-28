@@ -1,3 +1,7 @@
-import { initAuthorization, screenAuthorization } from './appStatus.slice';
+import appStatusReducer, {
+  initAuthorization,
+  screenAuthorization,
+} from './appStatus.slice';
 
 export { initAuthorization, screenAuthorization };
+export default appStatusReducer;
