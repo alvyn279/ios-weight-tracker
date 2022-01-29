@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import {
-  Button,
   KeyboardAvoidingView,
   SafeAreaView,
   ScrollView,
@@ -20,7 +19,6 @@ import { useTheme } from '../../hooks';
 import { HomeScreenProps } from '../../utils/navigation';
 import { TextStyle } from '../../hooks/theme';
 import WTButton from '../WTButton';
-import ThemedText from '../ThemedText';
 
 const styles = StyleSheet.create({
   appView: {
@@ -96,7 +94,6 @@ const HomeScreen = (_props: HomeScreenProps) => {
   useScrollToTop(scrollViewRef);
 
   const [inputWeight, setInputWeight] = useState<number>(150.0);
-  const [resultWeight, setResultWeight] = useState<number>(0);
 
   return (
     <SafeAreaView style={[styles.appView]}>
@@ -141,39 +138,6 @@ const HomeScreen = (_props: HomeScreenProps) => {
             colorPress={touchFeedbackColor}>
             <Text>lbs</Text>
           </InputSpinner>
-          <Button
-            title="list weight"
-            onPress={() => {
-              let listWeightOptions = {
-                startDate: new Date(2021, 0, 0).toISOString(), // required
-                endDate: new Date().toISOString(), // optional; default now
-                ascending: false, // optional; default false
-                limit: 10, // optional; default no limit
-              };
-
-              AppleHealthKit.getWeightSamples(
-                listWeightOptions,
-                (err: Object, results: Array<HealthValue>) => {
-                  if (err) {
-                    return;
-                  }
-                  setResultWeight(results[results.length - 1].value);
-                },
-              );
-            }}
-          />
-          <Button
-            title="clear weight"
-            onPress={() => {
-              setResultWeight(0);
-            }}
-          />
-          <View>
-            <ThemedText
-              style={[
-                styles.mainActionText,
-              ]}>{`Last weight = ${resultWeight}`}</ThemedText>
-          </View>
           <View style={[styles.flexDirectionRow]}>
             <WTButton
               onPress={() => {

@@ -6,7 +6,7 @@ const CustomDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    background: '#191919',
+    background: '#121212',
   },
 };
 
