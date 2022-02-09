@@ -1,4 +1,9 @@
-import weightsReducer, { fetchLatestWeight } from './weights.slice';
+import weightsReducer, {
+  fetchLatestWeight,
+  saveWeight,
+  SaveWeightDTO,
+} from './weights.slice';
 
-export { fetchLatestWeight };
+export { fetchLatestWeight, saveWeight };
+export type { SaveWeightDTO };
 export default weightsReducer;

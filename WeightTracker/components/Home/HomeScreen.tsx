@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -17,7 +17,11 @@ import {
   selectLatestWeight,
   selectPreferredWeightUnit,
 } from '../../store/weights/selectors';
-import { fetchLatestWeight } from '../../store/weights';
+import {
+  fetchLatestWeight,
+  saveWeight,
+  SaveWeightDTO,
+} from '../../store/weights';
 import { HealthUnit } from '../../utils/constants';
 
 const styles = StyleSheet.create({
@@ -59,6 +63,13 @@ const HomeScreen = (_props: HomeScreenProps) => {
     dispatch(fetchLatestWeight());
   }, [dispatch]);
 
+  const onSavePress = useCallback(
+    (saveWeightDto: SaveWeightDTO) => {
+      dispatch(saveWeight(saveWeightDto));
+    },
+    [dispatch],
+  );
+
   return (
     <SafeAreaView style={[styles.appView]}>
       <KeyboardAvoidingView
@@ -71,11 +82,12 @@ const HomeScreen = (_props: HomeScreenProps) => {
             styles.scrollViewContainer,
             { paddingBottom: tabBarHeight },
           ]}>
+          {/* TODO: handle no weight is present */}
           {initialWeight !== undefined ? (
             <WeightEditor
               initialWeight={initialWeight}
               weightUnit={preferredUnit}
-              onSavePress={() => {}}
+              onSavePress={onSavePress}
             />
           ) : (
             <ActivityIndicator style={[styles.loader]} />

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import InputSpinner from 'react-native-input-spinner';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import AppleHealthKit, { HealthValue } from 'react-native-health';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Text from '../ThemedText';
@@ -10,6 +9,7 @@ import WTButton from '../WTButton';
 import { useTheme } from '../../hooks';
 import { TextStyle } from '../../hooks/theme';
 import { HealthUnit } from '../../utils/constants';
+import { SaveWeightDTO } from '../../store/weights';
 
 const styles = StyleSheet.create({
   weightEditorContainer: {
@@ -65,7 +65,7 @@ const ScrollerButton = ({ iconName, textStyle }: ScrollerButtonProps) => (
 export interface WeightEditorProps {
   readonly initialWeight: number;
   readonly weightUnit: HealthUnit;
-  readonly onSavePress: Function;
+  onSavePress(dto: SaveWeightDTO): any;
 }
 
 const WeightEditor: React.FC<WeightEditorProps> = props => {
@@ -108,21 +108,11 @@ const WeightEditor: React.FC<WeightEditorProps> = props => {
       <View style={[styles.flexDirectionRow]}>
         <WTButton
           onPress={() => {
-            // TODO: use props.onSavePress
-            let saveWeightOptions = {
+            props.onSavePress({
               value: inputWeight,
-            };
-
-            AppleHealthKit.saveWeight(
-              saveWeightOptions,
-              (err: string, result: HealthValue) => {
-                if (err) {
-                  console.log('error saving weight to Healthkit: ', err);
-                  return;
-                }
-                console.log(result.value);
-              },
-            );
+              // TODO: use date from datetime picker
+              date: new Date(),
+            });
           }}
           confirmOptions={{
             title: 'Are you sure?',
