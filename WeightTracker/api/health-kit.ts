@@ -4,6 +4,7 @@ import AppleHealthKit, {
   HealthStatusResult,
   HealthUnitOptions,
   HealthValue,
+  HealthValueOptions,
 } from 'react-native-health';
 
 export const HKIsSharingAuthorizedForPermission = (status: HealthStatusCode) =>
@@ -59,7 +60,7 @@ export const HKGetAuthZStatus = (permissions: HealthKitPermissions) =>
 
 /**
  * Returns Promise to get the latest weight saved in Health.
- * @param options
+ * @param options {@link HealthValueOptions}
  */
 export const HKGetLatestWeight = (options: HealthUnitOptions) =>
   new Promise<HealthValue>((resolve, reject) => {
@@ -71,6 +72,23 @@ export const HKGetLatestWeight = (options: HealthUnitOptions) =>
         }
         // TODO: check scenario where there are no weights
         resolve(latestWeight);
+      },
+    );
+  });
+
+/**
+ * Returns Promise to save weight to Health.
+ * @param options {@link HealthValueOptions}
+ */
+export const HKSaveWeight = (options: HealthValueOptions) =>
+  new Promise<HealthValue>((resolve, reject) => {
+    AppleHealthKit.saveWeight(
+      options,
+      (err: string, savedWeight: HealthValue) => {
+        if (err) {
+          reject(new Error(`Cannot save weight: ${err}`));
+        }
+        resolve(savedWeight);
       },
     );
   });

@@ -8,7 +8,7 @@ import {
 import { HealthValue } from 'react-native-health';
 import { HealthUnit } from '../../utils/constants';
 import { RootState } from '..';
-import { HKGetLatestWeight } from '../../api/health-kit';
+import { HKGetLatestWeight, HKSaveWeight } from '../../api/health-kit';
 
 type LatestWeightFetch = {
   value: HealthValue | null;
@@ -16,9 +16,15 @@ type LatestWeightFetch = {
   loading: boolean;
 };
 
+type SaveWeight = {
+  error: SerializedError | null;
+  saving: boolean;
+};
+
 interface WeightsState {
   unit: HealthUnit;
   latestWeight: LatestWeightFetch;
+  saveWeight: SaveWeight;
 }
 
 const initialState: WeightsState = {
@@ -27,6 +33,10 @@ const initialState: WeightsState = {
     value: null,
     error: null,
     loading: false,
+  },
+  saveWeight: {
+    saving: false,
+    error: null,
   },
 };
 
@@ -43,6 +53,31 @@ export const fetchLatestWeight = createAsyncThunk<
     unit: currentState.weights.unit,
   });
   return latestWeight;
+});
+
+export type SaveWeightDTO = {
+  value: number;
+  date: Date;
+};
+
+/**
+ * Thunk to save a weight to Apple Heatlh.
+ */
+export const saveWeight = createAsyncThunk<
+  HealthValue,
+  SaveWeightDTO,
+  { state: RootState }
+>('weights/saveWeight', async (args, thunkAPI) => {
+  const currentState = thunkAPI.getState();
+  const savedWeight = await HKSaveWeight({
+    unit: currentState.weights.unit,
+    value: args.value,
+    // For weight, set startDate & endDate the same, see
+    // https://developer.apple.com/documentation/healthkit/hksample/1615481-startdate
+    startDate: args.date.toISOString(),
+    endDate: args.date.toISOString(),
+  });
+  return savedWeight;
 });
 
 const weightsSlice = createSlice({
@@ -69,7 +104,22 @@ const weightsSlice = createSlice({
           draftState.latestWeight.error = action.error;
           draftState.latestWeight.loading = false;
         },
-      );
+      )
+      .addCase(
+        saveWeight.fulfilled,
+        (draftState: WeightsState, _action: PayloadAction<HealthValue>) => {
+          draftState.saveWeight.error = null;
+          draftState.saveWeight.saving = false;
+        },
+      )
+      .addCase(saveWeight.pending, (draftState: WeightsState) => {
+        draftState.saveWeight.error = null;
+        draftState.saveWeight.saving = true;
+      })
+      .addCase(saveWeight.rejected, (draftState: WeightsState, action) => {
+        draftState.saveWeight.error = action.error;
+        draftState.saveWeight.saving = false;
+      });
   },
 });
 
