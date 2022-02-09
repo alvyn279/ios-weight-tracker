@@ -69,7 +69,7 @@ export const saveWeight = createAsyncThunk<
   { state: RootState }
 >('weights/saveWeight', async (args, thunkAPI) => {
   const currentState = thunkAPI.getState();
-  const savedWeight = await HKSaveWeight({
+  return await HKSaveWeight({
     unit: currentState.weights.unit,
     value: args.value,
     // For weight, set startDate & endDate the same, see
@@ -77,7 +77,6 @@ export const saveWeight = createAsyncThunk<
     startDate: args.date.toISOString(),
     endDate: args.date.toISOString(),
   });
-  return savedWeight;
 });
 
 const weightsSlice = createSlice({
