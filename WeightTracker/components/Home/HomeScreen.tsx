@@ -12,7 +12,11 @@ import { useScrollToTop } from '@react-navigation/native';
 
 import WeightEditor from '../WeightEditor';
 import { HomeScreenProps } from '../../utils/navigation';
-import { useAppDispatch, useAppSelector } from '../../store';
+import {
+  useAppDispatch,
+  useAppSelector,
+  useUnwrapAsyncThunk,
+} from '../../store';
 import {
   selectLatestWeight,
   selectPreferredWeightUnit,
@@ -53,6 +57,7 @@ const HomeScreen = (_props: HomeScreenProps) => {
   const tabBarHeight = useBottomTabBarHeight();
   const scrollViewRef = useRef(null);
   const dispatch = useAppDispatch();
+  const dispatchUnwrap = useUnwrapAsyncThunk();
 
   const initialWeight = useAppSelector<number | undefined>(selectLatestWeight);
   const preferredUnit = useAppSelector<HealthUnit>(selectPreferredWeightUnit);
@@ -65,9 +70,9 @@ const HomeScreen = (_props: HomeScreenProps) => {
 
   const onSavePress = useCallback(
     (saveWeightDto: SaveWeightDTO) => {
-      dispatch(saveWeight(saveWeightDto));
+      return dispatchUnwrap(saveWeight(saveWeightDto));
     },
-    [dispatch],
+    [dispatchUnwrap],
   );
 
   return (

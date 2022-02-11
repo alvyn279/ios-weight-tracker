@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
 });
 
 type WTButtonType = {
+  disabled?: boolean;
   onPress: Function;
   confirmOptions?: {
     title: string;
@@ -78,6 +79,7 @@ export const WTButton: React.FC<WTButtonType> = props => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
+        disabled={props.disabled}
         activeOpacity={0.5}
         style={[styles.button, navBarStyle]}
         onPress={handlePress}>

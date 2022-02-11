@@ -24,6 +24,7 @@ export type ThemedStyles = {
   navBarStyle: object;
   touchFeedbackColor: string;
   buttonTextPrimaryColor: TextStyle;
+  modalBackgroundStyle: object;
 };
 
 export const useTheme = (): ThemedStyles => {
@@ -50,6 +51,9 @@ export const useTheme = (): ThemedStyles => {
       color: isDarkMode
         ? CustomDarkTheme.colors.primary
         : DefaultTheme.colors.primary,
+    },
+    modalBackgroundStyle: {
+      backgroundColor: isDarkMode ? Colors.darker : Colors.light,
     },
   };
 };
