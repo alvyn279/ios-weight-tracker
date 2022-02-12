@@ -6,6 +6,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LottieView from 'lottie-react-native';
 import Modal, { ScaleAnimation, ModalContent } from 'react-native-modals';
+import { SerializedError } from '@reduxjs/toolkit';
 
 import Text from '../ThemedText';
 import WTButton from '../WTButton';
@@ -13,6 +14,7 @@ import { useTheme } from '../../hooks';
 import { TextStyle } from '../../hooks/theme';
 import { HealthUnit } from '../../utils/constants';
 import { SaveWeightDTO } from '../../store/weights';
+import { i18n } from '../../utils/i18n';
 
 const styles = StyleSheet.create({
   weightEditorContainer: {
@@ -46,9 +48,16 @@ const styles = StyleSheet.create({
   successModal: {
     height: 200,
     width: 200,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  warningIcon: {
+    height: 100,
+    width: 100,
+  },
+  centerAlignText: {
+    textAlign: 'center',
   },
 });
 
@@ -76,6 +85,8 @@ export interface WeightEditorProps {
   readonly initialWeight: number;
   readonly weightUnit: HealthUnit;
   onSavePress(dto: SaveWeightDTO): Promise<HealthValue>;
+  readonly saveWeightLoading: boolean;
+  readonly saveWeightError: SerializedError | null;
 }
 
 const WeightEditor: React.FC<WeightEditorProps> = props => {
@@ -83,43 +94,51 @@ const WeightEditor: React.FC<WeightEditorProps> = props => {
     useTheme();
   const [inputWeight, setInputWeight] = useState<number>(props.initialWeight);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [saveEnabled, setSaveEnabled] = useState<boolean>(true);
 
-  const handleAsyncSave = async () => {
-    try {
-      // TODO: use loading state from redux
-      // TODO: consider try catch for error state while saving
-      setSaveEnabled(false);
-      setModalOpen(true);
-      // const heatlhValue = await props.onSavePress({
-      //   value: inputWeight,
-      //   // TODO: use date from datetime picker
-      //   date: new Date(),
-      // });
-      setSaveEnabled(true);
-    } catch (error) {
-      console.warn(error);
-    }
+  const handleAsyncSave = () => {
+    setModalOpen(true);
+    props.onSavePress({
+      value: inputWeight,
+      // TODO: use date from datetime picker
+      date: new Date(),
+    });
   };
 
-  const SuccessModal = () => {
+  const SaveWeightStatusModal = () => {
     return (
       <Modal
         visible={modalOpen}
         modalAnimation={new ScaleAnimation()}
         onTouchOutside={() => {
           setModalOpen(false);
-        }}>
+        }}
+        overlayOpacity={0.3}
+        animationDuration={500}>
         <ModalContent style={[styles.successModal, modalBackgroundStyle]}>
-          {saveEnabled ? (
+          {props.saveWeightLoading ? (
+            <ActivityIndicator size="large" />
+          ) : props.saveWeightError ? (
+            <>
+              <View style={[styles.warningIcon]}>
+                <LottieView
+                  source={require('../../utils/animations/warning.json')}
+                  autoPlay
+                  loop={true}
+                  speed={0.6}
+                />
+              </View>
+              <Text style={[styles.centerAlignText]}>
+                {i18n.general_somethingWentWrong}{' '}
+                {props.saveWeightError.message}
+              </Text>
+            </>
+          ) : (
             <LottieView
               source={require('../../utils/animations/checkmark.json')}
               autoPlay
               loop={false}
-              speed={0.7}
+              speed={0.6}
             />
-          ) : (
-            <ActivityIndicator size="large" />
           )}
         </ModalContent>
       </Modal>
@@ -129,7 +148,9 @@ const WeightEditor: React.FC<WeightEditorProps> = props => {
   return (
     <View style={[styles.weightEditorContainer]}>
       <View>
-        <Text style={[styles.mainActionText]}>Enter your weight:</Text>
+        <Text style={[styles.mainActionText]}>
+          {i18n.weightEditor_enterWeight_prompt}
+        </Text>
       </View>
       <InputSpinner
         style={[styles.weightPicker]}
@@ -160,18 +181,18 @@ const WeightEditor: React.FC<WeightEditorProps> = props => {
       />
       <View style={[styles.flexDirectionRow]}>
         <WTButton
-          disabled={!saveEnabled}
+          disabled={props.saveWeightLoading}
           onPress={handleAsyncSave}
           confirmOptions={{
-            title: 'Are you sure?',
-            message: `You are about to save a weight of ${inputWeight}lbs to Apple Health.`,
+            title: i18n.general_areYouSure,
+            message: i18n.weightEditor_enterWeight_confirm_message(inputWeight),
             canceleable: true,
-            confirmButtonText: 'Save',
+            confirmButtonText: i18n.general_save,
           }}>
-          Save to Health
+          {i18n.weightEditor_enterWeight_save}
         </WTButton>
       </View>
-      <SuccessModal />
+      <SaveWeightStatusModal />
     </View>
   );
 };

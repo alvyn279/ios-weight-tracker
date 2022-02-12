@@ -20,6 +20,7 @@ import {
 import {
   selectLatestWeight,
   selectPreferredWeightUnit,
+  selectSaveWeight,
 } from '../../store/weights/selectors';
 import {
   fetchLatestWeight,
@@ -61,6 +62,8 @@ const HomeScreen = (_props: HomeScreenProps) => {
 
   const initialWeight = useAppSelector<number | undefined>(selectLatestWeight);
   const preferredUnit = useAppSelector<HealthUnit>(selectPreferredWeightUnit);
+  const { saving: saveWeightLoading, error: saveWeightError } =
+    useAppSelector(selectSaveWeight);
 
   useScrollToTop(scrollViewRef);
 
@@ -93,6 +96,8 @@ const HomeScreen = (_props: HomeScreenProps) => {
               initialWeight={initialWeight}
               weightUnit={preferredUnit}
               onSavePress={onSavePress}
+              saveWeightLoading={saveWeightLoading}
+              saveWeightError={saveWeightError}
             />
           ) : (
             <ActivityIndicator style={[styles.loader]} />
