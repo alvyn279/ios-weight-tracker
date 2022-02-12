@@ -7,8 +7,8 @@ import type { RootState, AppDispatch } from '.';
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-// Returns a dispatch function that will in turn return a Promise of generic
-// thunk result type.
+// Returns a dispatch function provider that will in turn return a Promise
+// of generic thunk result type.
 export type UnwrapAsyncThunkResult = <ResultType extends unknown>(
   asyncThunk: AsyncThunkAction<ResultType, any, any>,
 ) => Promise<ResultType>;

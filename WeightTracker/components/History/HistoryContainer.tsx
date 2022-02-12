@@ -1,17 +1,28 @@
 import React from 'react';
+import { Button, StyleSheet, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import { HistoryProps, SCREENS } from '../../utils/navigation';
-import { Button } from 'react-native';
 import { useTheme } from '../../hooks';
 import { getCommonNavigatorProps } from '../TabBar';
 
 const HistoryStack = createNativeStackNavigator();
 
+const styles = StyleSheet.create({
+  historyView: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+});
+
 const Temp = ({ navigation }: HistoryProps) => (
-  <Button
-    title="Go to home"
-    onPress={() => navigation.navigate(SCREENS.HOME, { fromHistory: true })}
-  />
+  <View style={[styles.historyView]}>
+    <Button
+      title="Go to home"
+      onPress={() => navigation.navigate(SCREENS.HOME, { fromHistory: true })}
+    />
+  </View>
 );
 
 const HistoryContainer = () => {

@@ -88,6 +88,7 @@ const WeightEditor: React.FC<WeightEditorProps> = props => {
   const handleAsyncSave = async () => {
     try {
       // TODO: use loading state from redux
+      // TODO: consider try catch for error state while saving
       setSaveEnabled(false);
       setModalOpen(true);
       // const heatlhValue = await props.onSavePress({
