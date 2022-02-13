@@ -26,7 +26,7 @@ import {
   SaveWeightDTO,
 } from '../../store/weights';
 import { HealthUnit } from '../../utils/constants';
-import { useScreenAwareFeatures } from '../../hooks/theme';
+import { useScreenAwareFeatures } from '../../hooks';
 
 const styles = StyleSheet.create({
   appView: {

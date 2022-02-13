@@ -10,8 +10,8 @@ import { SerializedError } from '@reduxjs/toolkit';
 
 import Text from '../ThemedText';
 import WTButton from '../WTButton';
-import { useTheme } from '../../hooks';
-import { TextStyle, useScreenAwareFeatures } from '../../hooks/theme';
+import { useTheme, useScreenAwareFeatures } from '../../hooks';
+import { TextStyle } from '../../hooks/theme';
 import { HealthUnit } from '../../utils/constants';
 import { SaveWeightDTO } from '../../store/weights';
 import { i18n } from '../../utils/i18n';

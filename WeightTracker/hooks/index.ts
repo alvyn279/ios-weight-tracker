@@ -1,4 +1,4 @@
-import { useTheme } from './theme';
+import { useScreenAwareFeatures, useTheme } from './theme';
 import { useOnResume } from './listeners';
 
-export { useOnResume, useTheme };
+export { useOnResume, useScreenAwareFeatures, useTheme };
