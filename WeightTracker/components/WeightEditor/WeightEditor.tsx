@@ -11,7 +11,7 @@ import { SerializedError } from '@reduxjs/toolkit';
 import Text from '../ThemedText';
 import WTButton from '../WTButton';
 import { useTheme } from '../../hooks';
-import { TextStyle } from '../../hooks/theme';
+import { TextStyle, useScreenAwareFeatures } from '../../hooks/theme';
 import { HealthUnit } from '../../utils/constants';
 import { SaveWeightDTO } from '../../store/weights';
 import { i18n } from '../../utils/i18n';
@@ -94,6 +94,7 @@ const WeightEditor: React.FC<WeightEditorProps> = props => {
     useTheme();
   const [inputWeight, setInputWeight] = useState<number>(props.initialWeight);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const { heights } = useScreenAwareFeatures();
 
   const handleAsyncSave = () => {
     setModalOpen(true);
@@ -146,12 +147,14 @@ const WeightEditor: React.FC<WeightEditorProps> = props => {
   };
 
   return (
-    <View style={[styles.weightEditorContainer]}>
-      <View>
-        <Text style={[styles.mainActionText]}>
-          {i18n.weightEditor_enterWeight_prompt}
-        </Text>
-      </View>
+    <View
+      style={[
+        styles.weightEditorContainer,
+        { minHeight: heights.viewportHeight },
+      ]}>
+      <Text style={[styles.mainActionText]}>
+        {i18n.weightEditor_enterWeight_prompt}
+      </Text>
       <InputSpinner
         style={[styles.weightPicker]}
         maxLength={5}

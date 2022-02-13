@@ -1,6 +1,13 @@
-import { ColorValue, StatusBarStyle, useColorScheme } from 'react-native';
+import {
+  ColorValue,
+  Dimensions,
+  StatusBarStyle,
+  useColorScheme,
+} from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const CustomDarkTheme = {
   ...DarkTheme,
@@ -54,6 +61,34 @@ export const useTheme = (): ThemedStyles => {
     },
     modalBackgroundStyle: {
       backgroundColor: isDarkMode ? Colors.darker : Colors.light,
+    },
+  };
+};
+
+export type Heights = {
+  viewportHeight: number;
+  headerHeight: number;
+  tabBarHeight: number;
+};
+
+export type ScreenAwareFeatures = {
+  heights: Heights;
+};
+
+export const useScreenAwareFeatures = () => {
+  // TODO: look into a way to normalize this offset programatically..
+  const PIXEL_OFFSET = 110;
+  const headerHeight = useHeaderHeight();
+  const tabBarHeight = useBottomTabBarHeight();
+  return {
+    heights: {
+      viewportHeight:
+        Dimensions.get('window').height -
+        headerHeight -
+        tabBarHeight -
+        PIXEL_OFFSET,
+      headerHeight,
+      tabBarHeight,
     },
   };
 };

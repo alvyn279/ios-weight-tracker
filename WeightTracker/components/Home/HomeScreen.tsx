@@ -6,8 +6,6 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import { useHeaderHeight } from '@react-navigation/elements';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useScrollToTop } from '@react-navigation/native';
 
 import WeightEditor from '../WeightEditor';
@@ -28,13 +26,11 @@ import {
   SaveWeightDTO,
 } from '../../store/weights';
 import { HealthUnit } from '../../utils/constants';
+import { useScreenAwareFeatures } from '../../hooks/theme';
 
 const styles = StyleSheet.create({
   appView: {
     flexDirection: 'column',
-    flex: 1,
-  },
-  scrollViewContainer: {
     flex: 1,
   },
   fullFlex: {
@@ -54,8 +50,7 @@ const styles = StyleSheet.create({
 const HomeScreen = (_props: HomeScreenProps) => {
   // Accessing params:
   //_props.route.params?.fromHistory;
-  const headerHeight = useHeaderHeight();
-  const tabBarHeight = useBottomTabBarHeight();
+  const { heights } = useScreenAwareFeatures();
   const scrollViewRef = useRef(null);
   const dispatch = useAppDispatch();
   const dispatchUnwrap = useUnwrapAsyncThunk();
@@ -82,14 +77,10 @@ const HomeScreen = (_props: HomeScreenProps) => {
     <SafeAreaView style={[styles.appView]}>
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={[styles.fullWidth, styles.fullFlex]}
-        keyboardVerticalOffset={headerHeight}>
+        style={[styles.fullWidth, styles.fullFlex]}>
         <ScrollView
           ref={scrollViewRef}
-          contentContainerStyle={[
-            styles.scrollViewContainer,
-            { paddingBottom: tabBarHeight },
-          ]}>
+          contentContainerStyle={[{ paddingBottom: heights.tabBarHeight }]}>
           {/* TODO: handle no weight is present */}
           {initialWeight !== undefined ? (
             <WeightEditor
