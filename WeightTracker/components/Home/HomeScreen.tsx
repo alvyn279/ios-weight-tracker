@@ -17,6 +17,7 @@ import {
 } from '../../store';
 import {
   selectLatestWeight,
+  selectLatestWeightLoading,
   selectPreferredWeightUnit,
   selectSaveWeight,
 } from '../../store/weights/selectors';
@@ -25,7 +26,7 @@ import {
   saveWeight,
   SaveWeightDTO,
 } from '../../store/weights';
-import { HealthUnit } from '../../utils/constants';
+import { DEFAULT_INITIAL_WEIGHT, HealthUnit } from '../../utils/constants';
 import { useScreenAwareFeatures } from '../../hooks';
 
 const styles = StyleSheet.create({
@@ -56,6 +57,9 @@ const HomeScreen = (_props: HomeScreenProps) => {
   const dispatchUnwrap = useUnwrapAsyncThunk();
 
   const initialWeight = useAppSelector<number | undefined>(selectLatestWeight);
+  const latestWeightLoading = useAppSelector<boolean>(
+    selectLatestWeightLoading,
+  );
   const preferredUnit = useAppSelector<HealthUnit>(selectPreferredWeightUnit);
   const { saving: saveWeightLoading, error: saveWeightError } =
     useAppSelector(selectSaveWeight);
@@ -81,17 +85,16 @@ const HomeScreen = (_props: HomeScreenProps) => {
         <ScrollView
           ref={scrollViewRef}
           contentContainerStyle={[{ paddingBottom: heights.tabBarHeight }]}>
-          {/* TODO: handle no weight is present */}
-          {initialWeight !== undefined ? (
+          {latestWeightLoading ? (
+            <ActivityIndicator style={[styles.loader]} />
+          ) : (
             <WeightEditor
-              initialWeight={initialWeight}
+              initialWeight={initialWeight || DEFAULT_INITIAL_WEIGHT}
               weightUnit={preferredUnit}
               onSavePress={onSavePress}
               saveWeightLoading={saveWeightLoading}
               saveWeightError={saveWeightError}
             />
-          ) : (
-            <ActivityIndicator style={[styles.loader]} />
           )}
         </ScrollView>
       </KeyboardAvoidingView>

@@ -30,3 +30,6 @@ export enum HealthUnit {
   pound = 'pound',
   second = 'second',
 }
+
+// TODO: improve based on the chosen unit of weight
+export const DEFAULT_INITIAL_WEIGHT = 150;
