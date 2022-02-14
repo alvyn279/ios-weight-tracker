@@ -24,6 +24,7 @@ import { useOnResume, useTheme } from './hooks';
 import {
   selectArePermissionsLoading,
   selectCanShareWithHealth,
+  selectResolvedHealthPermissions,
 } from './store/appStatus/selectors';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -42,6 +43,9 @@ const AppContainer = () => {
   const theme = useTheme();
 
   const appHasPermissions = useAppSelector<boolean>(selectCanShareWithHealth);
+  const appAskedHealth = useAppSelector<boolean>(
+    selectResolvedHealthPermissions,
+  );
   // TODO: look at transient error
   // const permissionsError = useAppSelector<SerializedError | null>(
   //   state => state.appStatus.initError,
@@ -66,7 +70,7 @@ const AppContainer = () => {
     </>
   );
 
-  if (permissionsLoading) {
+  if (permissionsLoading || !appAskedHealth) {
     return withStatusIndicator(
       <SafeAreaView style={[styles.absoluteZero, theme.backgroundStyle]}>
         <ActivityIndicator size={'large'} />

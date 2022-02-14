@@ -1,7 +1,10 @@
 import { RootState } from '..';
 
-export const selectCanShareWithHealth = (state: RootState) =>
-  state.appStatus.canShareWithHealth;
+export const selectCanShareWithHealth = (state: RootState): boolean =>
+  !!state.appStatus.canShareWithHealth;
 
-export const selectArePermissionsLoading = (state: RootState) =>
+export const selectResolvedHealthPermissions = (state: RootState): boolean =>
+  state.appStatus.canShareWithHealth !== null;
+
+export const selectArePermissionsLoading = (state: RootState): boolean =>
   state.appStatus.loading;

@@ -15,13 +15,13 @@ import {
 import { APP_HEALTH_PERMISSIONS } from '../../utils/constants';
 
 interface AppStatusState {
-  canShareWithHealth: boolean;
+  canShareWithHealth: boolean | null;
   initError: SerializedError | null;
   loading: boolean;
 }
 
 const initialState: AppStatusState = {
-  canShareWithHealth: false,
+  canShareWithHealth: null,
   initError: null,
   loading: false,
 };
