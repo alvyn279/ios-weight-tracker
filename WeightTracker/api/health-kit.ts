@@ -70,7 +70,6 @@ export const HKGetLatestWeight = (options: HealthUnitOptions) =>
         if (err) {
           reject(new Error(`Cannot fetch latest weight: ${err}`));
         }
-        // TODO: check scenario where there are no weights
         resolve(latestWeight);
       },
     );
