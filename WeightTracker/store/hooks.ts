@@ -13,6 +13,10 @@ export type UnwrapAsyncThunkResult = <ResultType extends unknown>(
   asyncThunk: AsyncThunkAction<ResultType, any, any>,
 ) => Promise<ResultType>;
 
+/**
+ * Dispatch an action and returns a Promise with the thunk's result.
+ * User is responsible to handle error with `.catch()` on returned Promise.
+ */
 export const useUnwrapAsyncThunk = (): UnwrapAsyncThunkResult => {
   const dispatch = useAppDispatch();
 

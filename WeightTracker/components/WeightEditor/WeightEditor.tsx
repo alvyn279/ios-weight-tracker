@@ -98,11 +98,16 @@ const WeightEditor: React.FC<WeightEditorProps> = props => {
 
   const handleAsyncSave = () => {
     setModalOpen(true);
-    props.onSavePress({
-      value: inputWeight,
-      // TODO: use date from datetime picker
-      date: new Date(),
-    });
+    props
+      .onSavePress({
+        value: inputWeight,
+        // TODO: use date from datetime picker
+        date: new Date(),
+      })
+      .then((healthValue: HealthValue) => {
+        console.log(healthValue);
+      })
+      .catch(_error => {});
   };
 
   const SaveWeightStatusModal = () => {

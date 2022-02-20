@@ -61,6 +61,7 @@ const AppContainer = () => {
 
   useOnResume(iosAppState, () => {
     dispatch(screenAuthorization());
+    // TODO: fetch latest weight
   });
 
   const withStatusIndicator = (children: React.ReactNode) => (
