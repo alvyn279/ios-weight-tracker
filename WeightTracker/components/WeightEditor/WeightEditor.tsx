@@ -10,6 +10,7 @@ import { SerializedError } from '@reduxjs/toolkit';
 
 import Text from '../ThemedText';
 import WTButton from '../WTButton';
+import DateTimePicker from '../DateTimePicker';
 import { useTheme, useScreenAwareFeatures } from '../../hooks';
 import { TextStyle } from '../../hooks/theme';
 import { HealthUnit } from '../../utils/constants';
@@ -41,9 +42,6 @@ const styles = StyleSheet.create({
     fontSize: 40,
     minWidth: '25%',
     marginHorizontal: 5,
-  },
-  flexDirectionRow: {
-    flexDirection: 'row',
   },
   successModal: {
     height: 200,
@@ -187,19 +185,19 @@ const WeightEditor: React.FC<WeightEditorProps> = props => {
         }}
         colorPress={touchFeedbackColor}
       />
-      <View style={[styles.flexDirectionRow]}>
-        <WTButton
-          disabled={props.saveWeightLoading}
-          onPress={handleAsyncSave}
-          confirmOptions={{
-            title: i18n.general_areYouSure,
-            message: i18n.weightEditor_enterWeight_confirm_message(inputWeight),
-            canceleable: true,
-            confirmButtonText: i18n.general_save,
-          }}>
-          {i18n.weightEditor_enterWeight_save}
-        </WTButton>
-      </View>
+      {/* TODO: pass state change for date time */}
+      <DateTimePicker onDateTimeChange={() => {}} />
+      <WTButton
+        disabled={props.saveWeightLoading}
+        onPress={handleAsyncSave}
+        confirmOptions={{
+          title: i18n.general_areYouSure,
+          message: i18n.weightEditor_enterWeight_confirm_message(inputWeight),
+          canceleable: true,
+          confirmButtonText: i18n.general_save,
+        }}>
+        {i18n.weightEditor_enterWeight_save}
+      </WTButton>
       <SaveWeightStatusModal />
     </View>
   );

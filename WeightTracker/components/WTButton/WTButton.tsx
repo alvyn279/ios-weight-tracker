@@ -28,6 +28,10 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
   },
+  flexDirectionRow: {
+    flexDirection: 'row',
+    width: '100%',
+  },
 });
 
 type WTButtonType = {
@@ -77,16 +81,18 @@ export const WTButton: React.FC<WTButtonType> = props => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        disabled={props.disabled}
-        activeOpacity={0.5}
-        style={[styles.button, navBarStyle]}
-        onPress={handlePress}>
-        <ThemedText style={[styles.buttonText, buttonTextPrimaryColor]}>
-          {props.children}
-        </ThemedText>
-      </TouchableOpacity>
+    <View style={[styles.flexDirectionRow]}>
+      <View style={styles.container}>
+        <TouchableOpacity
+          disabled={props.disabled}
+          activeOpacity={0.5}
+          style={[styles.button, navBarStyle]}
+          onPress={handlePress}>
+          <ThemedText style={[styles.buttonText, buttonTextPrimaryColor]}>
+            {props.children}
+          </ThemedText>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
