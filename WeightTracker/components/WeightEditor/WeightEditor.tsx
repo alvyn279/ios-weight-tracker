@@ -10,7 +10,7 @@ import { SerializedError } from '@reduxjs/toolkit';
 
 import Text from '../ThemedText';
 import WTButton from '../WTButton';
-import DateTimePicker from '../DateTimePicker';
+import OptionsPicker from '../OptionsPicker';
 import { useTheme, useScreenAwareFeatures } from '../../hooks';
 import { TextStyle } from '../../hooks/theme';
 import { HealthUnit } from '../../utils/constants';
@@ -186,7 +186,7 @@ const WeightEditor: React.FC<WeightEditorProps> = props => {
         colorPress={touchFeedbackColor}
       />
       {/* TODO: pass state change for date time */}
-      <DateTimePicker onDateTimeChange={() => {}} />
+      <OptionsPicker onDateTimeChange={() => {}} />
       <WTButton
         disabled={props.saveWeightLoading}
         onPress={handleAsyncSave}

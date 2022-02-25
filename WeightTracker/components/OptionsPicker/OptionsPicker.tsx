@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 55,
+    height: 52,
   },
   actionStripButtonContainer: {
     paddingHorizontal: 10,
@@ -39,17 +39,23 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
   },
+  iosDateTimePicker: {
+    paddingVertical: 10,
+    flexDirection: 'column',
+  },
 });
 
-interface DateTimePickerProps {
+interface OptionsPickerProps {
   onDateTimeChange(date: Date): void;
 }
 /**
  * Button component that will pop up a modal allowing the user to pick
- * a date & time. Datetime object is pass in callback when user is done.
+ * a date & time, and unit.
  */
-const DateTimePicker: React.FC<DateTimePickerProps> = _props => {
+const OptionsPicker: React.FC<OptionsPickerProps> = _props => {
+  const now = new Date();
   const [showPicker, setShowPicker] = useState<boolean>(false);
+  const [dateTime, setDateTime] = useState<Date>(now);
   const { backgroundStyle, navBarStyle, textStyle } = useTheme();
 
   const memoShowPicker = useCallback(
@@ -57,14 +63,35 @@ const DateTimePicker: React.FC<DateTimePickerProps> = _props => {
     [setShowPicker],
   );
 
-  // TODO: replace open modal button with icon button
-  // TODO: add date time picker in modal content
+  const ActionStrip = () => (
+    <View style={[styles.actionStrip, navBarStyle]}>
+      <View style={[styles.actionStripButtonContainer]}>
+        <Button title={i18n.general_cancel} onPress={memoShowPicker(false)} />
+      </View>
+      <View style={[styles.actionStripButtonContainer]}>
+        <Text style={[styles.modalTitle]}>
+          {i18n.weightEditor_dateTimePicker_title}
+        </Text>
+      </View>
+      <View style={[styles.actionStripButtonContainer]}>
+        <Button
+          title={i18n.general_done}
+          onPress={() => {
+            // call weight setter
+            memoShowPicker(false)();
+          }}
+        />
+      </View>
+    </View>
+  );
+
+  // TODO: create section list view for choosing date, time, unit
   return (
     <View style={styles.container}>
       <TouchableOpacity
         onPress={memoShowPicker(true)}
         style={[styles.touchableDatePickerIcon]}>
-        <Ionicons name={'alarm-outline'} size={40} color={textStyle.color} />
+        <Ionicons name={'options-outline'} size={40} color={textStyle.color} />
       </TouchableOpacity>
       <Modal
         visible={showPicker}
@@ -72,30 +99,21 @@ const DateTimePicker: React.FC<DateTimePickerProps> = _props => {
         animationType="slide"
         onRequestClose={memoShowPicker(false)}>
         <View style={[backgroundStyle, styles.modalContainer]}>
-          <View style={[styles.actionStrip, navBarStyle]}>
-            <View style={[styles.actionStripButtonContainer]}>
-              <Button
-                title={i18n.general_close}
-                onPress={memoShowPicker(false)}
-              />
-            </View>
-            <View style={[styles.actionStripButtonContainer]}>
-              <Text style={[styles.modalTitle]}>
-                {i18n.weightEditor_dateTimePicker_title}
-              </Text>
-            </View>
-            <View style={[styles.actionStripButtonContainer]}>
-              <Button
-                title={i18n.general_done}
-                onPress={() => {
-                  // call weight setter
-                  memoShowPicker(false)();
+          <ActionStrip />
+          <View style={[styles.modalContent]}>
+            <View style={[styles.iosDateTimePicker]}>
+              <DTP
+                mode={'datetime'}
+                display={'inline'}
+                value={dateTime}
+                maximumDate={now}
+                onChange={(_event, date) => {
+                  if (date) {
+                    setDateTime(date);
+                  }
                 }}
               />
             </View>
-          </View>
-          <View style={[styles.modalContent]}>
-            <WTButton onPress={memoShowPicker(false)}>Done</WTButton>
           </View>
         </View>
       </Modal>
@@ -103,4 +121,4 @@ const DateTimePicker: React.FC<DateTimePickerProps> = _props => {
   );
 };
 
-export default DateTimePicker;
+export default OptionsPicker;
