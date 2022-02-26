@@ -21,17 +21,21 @@ export type TextStyle = {
   color: number | ColorValue;
 };
 
+export type BackgrounStyle = {
+  backgroundColor: string;
+};
+
 export type ThemedStyles = {
   isDarkMode: boolean;
   DarkTheme: Theme;
   DefaultTheme: Theme;
-  backgroundStyle: object;
+  backgroundStyle: BackgrounStyle;
   textStyle: TextStyle;
   barStyle: StatusBarStyle;
   navBarStyle: object;
   touchFeedbackColor: string;
   buttonTextPrimaryColor: TextStyle;
-  modalBackgroundStyle: object;
+  modalBackgroundStyle: BackgrounStyle;
 };
 
 export const useTheme = (): ThemedStyles => {

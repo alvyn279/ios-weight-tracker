@@ -9,7 +9,9 @@ export const i18n = {
   weightEditor_enterWeight_save: 'Save to Health',
   weightEditor_enterWeight_confirm_message: (weight: number) =>
     `You are about to save a weight of ${weight}lbs to Apple Health.`,
-  weightEditor_dateTimePicker_title: 'Options',
+  weightEditor_options_title: 'Options',
+  weightEditor_options_dateTime: 'Date and time',
+  weightEditor_options_unit: 'Unit',
   warningPanel_missingHealthPermissions:
     'Please allow all operations to your Apple Health App in Settings > Health > Data Access & Devices > WeightTracker',
 };

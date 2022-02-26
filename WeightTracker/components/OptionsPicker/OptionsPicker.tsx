@@ -9,7 +9,6 @@ import {
 import DTP from '@react-native-community/datetimepicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import WTButton from '../WTButton';
 import Text from '../ThemedText';
 import { useTheme } from '../../hooks';
 import { i18n } from '../../utils/i18n';
@@ -17,13 +16,14 @@ import { i18n } from '../../utils/i18n';
 const styles = StyleSheet.create({
   container: {},
   modalContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
   },
   modalContainer: {
     flexDirection: 'column',
     flex: 1,
   },
-  touchableDatePickerIcon: {
+  touchableOptionsIcon: {
     marginBottom: 20,
   },
   actionStrip: {
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 52,
+    height: 50,
   },
   actionStripButtonContainer: {
     paddingHorizontal: 10,
@@ -39,9 +39,28 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
   },
-  iosDateTimePicker: {
-    paddingVertical: 10,
+  datePicker: {
+    width: 200,
+  },
+  optionsTable: {
+    borderRadius: 12,
     flexDirection: 'column',
+  },
+  optionsRow: {
+    height: 55,
+    maxHeight: 55,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  },
+  optionsSeparator: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  optionKeyName: {
+    fontSize: 18,
   },
 });
 
@@ -56,7 +75,7 @@ const OptionsPicker: React.FC<OptionsPickerProps> = _props => {
   const now = new Date();
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const [dateTime, setDateTime] = useState<Date>(now);
-  const { backgroundStyle, navBarStyle, textStyle } = useTheme();
+  const { backgroundStyle, modalBackgroundStyle, textStyle } = useTheme();
 
   const memoShowPicker = useCallback(
     (pickerShowing: boolean) => () => setShowPicker(pickerShowing),
@@ -64,13 +83,13 @@ const OptionsPicker: React.FC<OptionsPickerProps> = _props => {
   );
 
   const ActionStrip = () => (
-    <View style={[styles.actionStrip, navBarStyle]}>
+    <View style={[styles.actionStrip, modalBackgroundStyle]}>
       <View style={[styles.actionStripButtonContainer]}>
         <Button title={i18n.general_cancel} onPress={memoShowPicker(false)} />
       </View>
       <View style={[styles.actionStripButtonContainer]}>
         <Text style={[styles.modalTitle]}>
-          {i18n.weightEditor_dateTimePicker_title}
+          {i18n.weightEditor_options_title}
         </Text>
       </View>
       <View style={[styles.actionStripButtonContainer]}>
@@ -90,7 +109,7 @@ const OptionsPicker: React.FC<OptionsPickerProps> = _props => {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={memoShowPicker(true)}
-        style={[styles.touchableDatePickerIcon]}>
+        style={[styles.touchableOptionsIcon]}>
         <Ionicons name={'options-outline'} size={40} color={textStyle.color} />
       </TouchableOpacity>
       <Modal
@@ -101,18 +120,39 @@ const OptionsPicker: React.FC<OptionsPickerProps> = _props => {
         <View style={[backgroundStyle, styles.modalContainer]}>
           <ActionStrip />
           <View style={[styles.modalContent]}>
-            <View style={[styles.iosDateTimePicker]}>
-              <DTP
-                mode={'datetime'}
-                display={'inline'}
-                value={dateTime}
-                maximumDate={now}
-                onChange={(_event, date) => {
-                  if (date) {
-                    setDateTime(date);
-                  }
-                }}
-              />
+            <View style={[styles.optionsTable, modalBackgroundStyle]}>
+              <View
+                style={[
+                  styles.optionsRow,
+                  styles.optionsSeparator,
+                  { borderBottomColor: backgroundStyle.backgroundColor },
+                ]}>
+                <Text style={[styles.optionKeyName]}>
+                  {i18n.weightEditor_options_dateTime}
+                </Text>
+                <DTP
+                  mode={'datetime'}
+                  value={dateTime}
+                  maximumDate={now}
+                  onChange={(_event, date) => {
+                    if (date) {
+                      setDateTime(date);
+                    }
+                  }}
+                  style={[styles.datePicker]}
+                />
+              </View>
+              <View
+                style={[
+                  styles.optionsRow,
+                  styles.optionsSeparator,
+                  { borderBottomColor: backgroundStyle.backgroundColor },
+                ]}>
+                <Text style={[styles.optionKeyName]}>
+                  {i18n.weightEditor_options_unit}
+                </Text>
+                <Text>Picker for unit</Text>
+              </View>
             </View>
           </View>
         </View>
