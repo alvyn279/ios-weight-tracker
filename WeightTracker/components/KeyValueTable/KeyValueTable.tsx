@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   optionsSeparator: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginBottom: StyleSheet.hairlineWidth,
   },
   optionKeyName: {
     fontSize: 18,
@@ -41,15 +41,18 @@ interface KeyValueTableProps {
 const KeyValueTable: React.FC<KeyValueTableProps> = props => {
   const { modalBackgroundStyle } = useTheme();
   return (
-    <View style={[styles.optionsTable]}>
+    <View
+      style={[
+        styles.optionsTable,
+        { backgroundColor: props.separatorLineColor },
+      ]}>
       {props.items.map((keyValueItem, index) => (
         <View
           key={index}
           style={[
             styles.optionsRow,
             modalBackgroundStyle,
-            styles.optionsSeparator,
-            { borderBottomColor: props.separatorLineColor },
+            index !== props.items.length - 1 ? styles.optionsSeparator : {},
           ]}>
           <Text style={[styles.optionKeyName]}>{keyValueItem.key}</Text>
           {typeof keyValueItem.value === 'string' ? (
