@@ -12,6 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Text from '../ThemedText';
 import { useTheme } from '../../hooks';
 import { i18n } from '../../utils/i18n';
+import KeyValueTable, { KeyValueItem } from '../KeyValueTable';
 
 const styles = StyleSheet.create({
   container: {},
@@ -41,26 +42,6 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     width: 200,
-  },
-  optionsTable: {
-    borderRadius: 12,
-    flexDirection: 'column',
-  },
-  optionsRow: {
-    height: 55,
-    maxHeight: 55,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-  },
-  optionsSeparator: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  optionKeyName: {
-    fontSize: 18,
   },
 });
 
@@ -104,7 +85,30 @@ const OptionsPicker: React.FC<OptionsPickerProps> = _props => {
     </View>
   );
 
-  // TODO: create section list view for choosing date, time, unit
+  const optionsItems: Array<KeyValueItem> = [
+    {
+      key: i18n.weightEditor_options_dateTime,
+      value: (
+        <DTP
+          mode={'datetime'}
+          value={dateTime}
+          maximumDate={now}
+          onChange={(_event, date) => {
+            if (date) {
+              setDateTime(date);
+            }
+          }}
+          style={[styles.datePicker]}
+        />
+      ),
+    },
+    {
+      key: i18n.weightEditor_options_unit,
+      // TODO: implement a unit picker
+      value: 'Picker for unit',
+    },
+  ];
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -120,40 +124,7 @@ const OptionsPicker: React.FC<OptionsPickerProps> = _props => {
         <View style={[backgroundStyle, styles.modalContainer]}>
           <ActionStrip />
           <View style={[styles.modalContent]}>
-            <View style={[styles.optionsTable, modalBackgroundStyle]}>
-              <View
-                style={[
-                  styles.optionsRow,
-                  styles.optionsSeparator,
-                  { borderBottomColor: backgroundStyle.backgroundColor },
-                ]}>
-                <Text style={[styles.optionKeyName]}>
-                  {i18n.weightEditor_options_dateTime}
-                </Text>
-                <DTP
-                  mode={'datetime'}
-                  value={dateTime}
-                  maximumDate={now}
-                  onChange={(_event, date) => {
-                    if (date) {
-                      setDateTime(date);
-                    }
-                  }}
-                  style={[styles.datePicker]}
-                />
-              </View>
-              <View
-                style={[
-                  styles.optionsRow,
-                  styles.optionsSeparator,
-                  { borderBottomColor: backgroundStyle.backgroundColor },
-                ]}>
-                <Text style={[styles.optionKeyName]}>
-                  {i18n.weightEditor_options_unit}
-                </Text>
-                <Text>Picker for unit</Text>
-              </View>
-            </View>
+            <KeyValueTable items={optionsItems} />
           </View>
         </View>
       </Modal>
