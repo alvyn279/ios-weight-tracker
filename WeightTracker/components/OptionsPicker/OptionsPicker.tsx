@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import {
+  ActionSheetIOS,
   Button,
   Modal,
   StyleSheet,
@@ -43,7 +44,18 @@ const styles = StyleSheet.create({
   datePicker: {
     width: 200,
   },
+  optionsPickerTouchable: {
+    backgroundColor: 'red',
+    minWidth: 65,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 7,
+    alignItems: 'center',
+  },
 });
+
+// TODO, switch to persistent unit layer
+const DEFAULT_UNIT = 'lbs';
 
 interface OptionsPickerProps {
   onDateTimeChange(date: Date): void;
@@ -56,6 +68,8 @@ const OptionsPicker: React.FC<OptionsPickerProps> = _props => {
   const now = new Date();
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const [dateTime, setDateTime] = useState<Date>(now);
+  // TODO, persist in redux or context instead
+  const [pickedUnit, setPickedUnit] = useState<string>(DEFAULT_UNIT);
   const { backgroundStyle, modalBackgroundStyle, textStyle } = useTheme();
 
   const memoShowPicker = useCallback(
@@ -85,6 +99,8 @@ const OptionsPicker: React.FC<OptionsPickerProps> = _props => {
     </View>
   );
 
+  const unitOptions = [DEFAULT_UNIT, 'kg'];
+
   const optionsItems: Array<KeyValueItem> = [
     {
       key: i18n.weightEditor_options_dateTime,
@@ -105,7 +121,23 @@ const OptionsPicker: React.FC<OptionsPickerProps> = _props => {
     {
       key: i18n.weightEditor_options_unit,
       // TODO: implement a unit picker
-      value: 'Picker for unit',
+      value: (
+        <TouchableOpacity
+          style={[styles.optionsPickerTouchable]}
+          onPress={() => {
+            ActionSheetIOS.showActionSheetWithOptions(
+              {
+                options: unitOptions,
+                userInterfaceStyle: 'dark',
+              },
+              buttonIndex => {
+                setPickedUnit(unitOptions[buttonIndex]);
+              },
+            );
+          }}>
+          <Text>{pickedUnit}</Text>
+        </TouchableOpacity>
+      ),
     },
   ];
 
