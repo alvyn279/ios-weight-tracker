@@ -6,7 +6,6 @@ import {
   SerializedError,
 } from '@reduxjs/toolkit';
 import { HealthValue } from 'react-native-health';
-import { HealthUnit } from '../../utils/constants';
 import { RootState } from '..';
 import { HKGetLatestWeight, HKSaveWeight } from '../../api/health-kit';
 
@@ -22,13 +21,11 @@ type SaveWeight = {
 };
 
 interface WeightsState {
-  unit: HealthUnit;
   latestWeight: LatestWeightFetch;
   saveWeight: SaveWeight;
 }
 
 const initialState: WeightsState = {
-  unit: HealthUnit.pound,
   latestWeight: {
     value: null,
     error: null,
@@ -50,7 +47,7 @@ export const fetchLatestWeight = createAsyncThunk<
 >('weights/fetchLatestWeight', async (_args, thunkAPI) => {
   const currentState = thunkAPI.getState();
   const latestWeight = await HKGetLatestWeight({
-    unit: currentState.weights.unit,
+    unit: currentState.preferences.unit,
   });
   return latestWeight;
 });
@@ -70,7 +67,7 @@ export const saveWeight = createAsyncThunk<
 >('weights/saveWeight', async (args, thunkAPI) => {
   const currentState = thunkAPI.getState();
   return await HKSaveWeight({
-    unit: currentState.weights.unit,
+    unit: currentState.preferences.unit,
     value: args.value,
     // For weight, set startDate & endDate the same, see
     // https://developer.apple.com/documentation/healthkit/hksample/1615481-startdate

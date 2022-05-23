@@ -81,6 +81,7 @@ const ScrollerButton = ({ iconName, textStyle }: ScrollerButtonProps) => (
 
 export interface WeightEditorProps {
   readonly initialWeight: number;
+  // TODO: use weight unit in compoenent
   readonly weightUnit: HealthUnit;
   onSavePress(dto: SaveWeightDTO): Promise<HealthValue>;
   readonly saveWeightLoading: boolean;

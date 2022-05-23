@@ -18,7 +18,6 @@ import {
 import {
   selectLatestWeight,
   selectLatestWeightLoading,
-  selectPreferredWeightUnit,
   selectSaveWeight,
 } from '../../store/weights/selectors';
 import {
@@ -26,6 +25,7 @@ import {
   saveWeight,
   SaveWeightDTO,
 } from '../../store/weights';
+import { selectPreferredWeightUnit } from '../../store/preferences/selectors';
 import { DEFAULT_INITIAL_WEIGHT, HealthUnit } from '../../utils/constants';
 import { useScreenAwareFeatures } from '../../hooks';
 
